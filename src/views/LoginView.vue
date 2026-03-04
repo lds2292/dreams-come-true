@@ -89,7 +89,7 @@
       <div class="form-links">
         <a href="#" class="form-link">비밀번호 찾기</a>
         <span class="dot-divider">·</span>
-        <a href="#" class="form-link">회원가입</a>
+        <RouterLink to="/signup" class="form-link">회원가입</RouterLink>
       </div>
     </form>
 
@@ -117,7 +117,7 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
