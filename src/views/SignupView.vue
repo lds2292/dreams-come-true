@@ -463,8 +463,9 @@ async function onSubmit() {
   display: flex; align-items: center; justify-content: center; gap: 8px;
   height: 54px; background: #5b21b6; color: #fff;
   border: none; border-radius: 14px; font-size: 16px; font-weight: 700;
-  cursor: pointer; transition: background 0.15s; flex: 1;
+  cursor: pointer; transition: background 0.15s; width: 100%;
 }
+.step2-actions .submit-btn { width: auto; flex: 1; }
 .submit-btn:active:not(:disabled) { background: #4c1d95; }
 .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .btn-spinner {

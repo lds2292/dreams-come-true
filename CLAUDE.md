@@ -38,7 +38,8 @@ src/
     ├── SearchView.vue    # 검색 결과 페이지
     ├── NotifyView.vue    # 알림 페이지 (미구현)
     ├── MyView.vue        # 마이페이지 (로그인/비로그인 분기)
-    └── LoginView.vue     # 로그인 페이지 (독립 레이아웃)
+    ├── LoginView.vue     # 로그인 페이지 (독립 레이아웃)
+    └── SignupView.vue    # 회원가입 페이지 (2단계 폼 UI 완성, API 미연동)
 ```
 
 ---
@@ -47,6 +48,7 @@ src/
 
 ```
 /login              → LoginView   (MainLayout 없음, 독립 전체화면)
+/signup             → SignupView  (MainLayout 없음, 독립 전체화면)
 /                   → MainLayout
   ├── /             → HomeView
   ├── /search       → SearchView  (?q=검색어 쿼리 파라미터)
@@ -161,7 +163,19 @@ npm run preview  # 빌드 결과 미리보기
 - [ ] 카카오·네이버 소셜 로그인 연동
 - [ ] 꿈해몽 검색 API 연동 (`SearchView.vue` `doSearch`)
 - [ ] 알림 페이지 (`NotifyView.vue`) 구현
-- [ ] 회원가입 페이지 구현
+- [x] 회원가입 페이지 UI 구현 (`SignupView.vue` — 2단계 폼, 유효성 검사, 약관 동의)
+- [ ] 회원가입 API 연동 (`SignupView.vue` `onSubmit` — 현재 setTimeout 목업)
 - [ ] 꿈해몽 상세 페이지 구현
-- [ ] 사주 개인화 (생년월일 입력)
+- [ ] 사주 개인화 (생년월일 입력) → 완료 후 아래 섹션 활성화
 - [ ] 십이지신 상세 운세 페이지
+
+---
+
+## PoC 비노출 항목
+
+### 오늘의 사주풀이 (`HomeView.vue`)
+
+- **현재 상태:** HTML 주석 처리로 숨김 (`<!-- ... -->`)
+- **위치:** `src/views/HomeView.vue` — "오늘의 사주풀이" 섹션 블록
+- **활성화 조건:** 사주 개인화 기능(생년월일 입력) 구현 완료 후 주석 해제
+- **관련 데이터:** `sajuPillars`, `todaySaju` (script setup 내 임시 데이터로 보존됨)

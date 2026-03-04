@@ -56,8 +56,8 @@
       </div>
     </section>
 
-    <!-- ───────── 오늘의 사주풀이 ───────── -->
-    <section class="section">
+    <!-- ───────── 오늘의 사주풀이 (PoC 비노출 — TODO: 사주 개인화 후 활성화) ───────── -->
+    <!-- <section class="section">
       <div class="section-head">
         <h2 class="section-title">🪬 오늘의 사주풀이</h2>
         <a href="#" class="section-more">내 사주 보기</a>
@@ -85,7 +85,7 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
 
     <!-- ───────── 십이지신 운세 ───────── -->
     <section class="section">
