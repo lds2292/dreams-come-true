@@ -20,7 +20,7 @@
       <!-- 콘텐츠 -->
       <div class="hero-content">
         <p class="hero-date">{{ todayLabel }}</p>
-        <h1 class="hero-title">오늘의 꿈,<br>오늘의 운세</h1>
+        <h1 class="hero-title">오늘의 꿈</h1>
         <p class="hero-sub">당신의 꿈이 이루어지는 곳</p>
 
         <!-- 검색창 -->
@@ -49,27 +49,47 @@
           </div>
         </div>
 
-        <!-- 빠른 키워드 -->
-        <div class="hero-keywords">
-          <button v-for="kw in quickKeywords" :key="kw" class="kw-chip" @click="searchQuery = kw; onSearch()">
-            {{ kw }}
-          </button>
+        <!-- 최근 검색어 -->
+        <div v-if="recentKeywords.length" class="hero-recent">
+          <div class="hero-recent-header">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/>
+            </svg>
+            <span>최근 검색</span>
+          </div>
+          <div class="hero-keywords">
+            <button v-for="kw in recentKeywords.slice(0, 5)" :key="kw" class="kw-chip kw-chip-recent" @click="searchQuery = kw; onSearch()">
+              {{ kw }}
+            </button>
+          </div>
         </div>
+
       </div>
     </section>
 
-    <!-- ───────── 인기 꿈해몽 ───────── -->
+    <!-- ───────── 꿈해몽 카테고리 ───────── -->
     <section class="section">
+      <div class="category-grid">
+        <button
+          v-for="cat in dreamCategories"
+          :key="cat.label"
+          class="category-btn"
+          @click="onCategoryClick(cat.label)"
+        >
+          <img :src="cat.icon" :alt="cat.label" class="category-icon" />
+          <span class="category-label">{{ cat.label }}</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ───────── 인기 꿈해몽 (PoC 비노출 — TODO: 활성화) ───────── -->
+    <!-- <section class="section">
       <div class="section-head">
         <h2 class="section-title">🔥 인기 꿈해몽</h2>
         <a href="#" class="section-more">더보기</a>
       </div>
       <div class="dream-scroll">
-        <div
-          v-for="dream in popularDreams"
-          :key="dream.id"
-          class="dream-card"
-        >
+        <div v-for="dream in popularDreams" :key="dream.id" class="dream-card">
           <div class="dream-emoji">{{ dream.emoji }}</div>
           <div class="dream-content">
             <p class="dream-name">{{ dream.title }}</p>
@@ -78,7 +98,7 @@
           <span :class="['dream-tag', dream.tagType]">{{ dream.tag }}</span>
         </div>
       </div>
-    </section>
+    </section> -->
 
     <!-- ───────── 오늘의 사주풀이 (PoC 비노출 — TODO: 사주 개인화 후 활성화) ───────── -->
     <!-- <section class="section">
@@ -140,7 +160,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -148,6 +168,12 @@ const router = useRouter()
 // 검색
 const searchQuery = ref('')
 const searchFocused = ref(false)
+const recentKeywords = ref([])
+
+onMounted(() => {
+  recentKeywords.value = JSON.parse(localStorage.getItem('dct_recent') || '[]')
+})
+
 function onSearch() {
   const q = searchQuery.value.trim()
   if (q) router.push({ path: '/search', query: { q } })
@@ -159,8 +185,19 @@ const todayLabel = computed(() => {
   return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${['일', '월', '화', '수', '목', '금', '토'][d.getDay()]}요일`
 })
 
-// 히어로 빠른 검색 키워드
-const quickKeywords = ['용꿈', '돼지꿈', '하늘을 나는 꿈', '이가 빠지는 꿈', '물꿈']
+// 꿈해몽 카테고리
+const dreamCategories = [
+  { icon: new URL('@/assets/icons/categ_icon_feel.png', import.meta.url).href, label: '사람/감정' },
+  { icon: new URL('@/assets/icons/icon_apple.png',      import.meta.url).href, label: '동물/식물' },
+  { icon: new URL('@/assets/icons/icon_act.png',        import.meta.url).href, label: '행동'      },
+  { icon: new URL('@/assets/icons/icon_death.png',      import.meta.url).href, label: '죽음/영혼' },
+  { icon: new URL('@/assets/icons/icon_sun.png',        import.meta.url).href, label: '자연현상'  },
+  { icon: new URL('@/assets/icons/icon_teapot.png',     import.meta.url).href, label: '생활용품'  },
+]
+
+function onCategoryClick(category) {
+  router.push({ path: '/search', query: { category } })
+}
 
 // 인기 꿈해몽
 const popularDreams = [
@@ -380,9 +417,24 @@ const zodiacList = [
   padding: 0;
 }
 
-/* ── 빠른 키워드 ── */
+/* ── 최근 검색 & 빠른 키워드 ── */
+.hero-recent {
+  margin-top: 14px;
+}
+.hero-recent-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  margin-bottom: 8px;
+}
 .hero-keywords {
   display: flex;
+  align-items: center;
   gap: 7px;
   margin-top: 14px;
   flex-wrap: wrap;
@@ -390,20 +442,20 @@ const zodiacList = [
 .kw-chip {
   height: 28px;
   padding: 0 12px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(167, 139, 250, 0.15);
+  border: 1px solid rgba(167, 139, 250, 0.35);
   border-radius: 20px;
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
+  color: #ddd6fe;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 .kw-chip:active {
-  background: rgba(255, 255, 255, 0.22);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(167, 139, 250, 0.28);
+  border-color: rgba(167, 139, 250, 0.6);
 }
 
 /* ── 공통 섹션 ── */
@@ -426,6 +478,53 @@ const zodiacList = [
   font-size: 12px;
   color: #7c3aed;
   text-decoration: none;
+}
+
+/* ── 카테고리 ── */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.category-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 8px;
+  background: #fff;
+  border: 1px solid #ede9fe;
+  border-radius: 16px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(91,33,182,0.07), 0 1px 3px rgba(0,0,0,0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.category-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 1px 6px rgba(91,33,182,0.05);
+  border-color: #c4b5fd;
+  background: #faf5ff;
+}
+@media (hover: hover) {
+  .category-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(91,33,182,0.13), 0 2px 6px rgba(0,0,0,0.07);
+    border-color: #c4b5fd;
+  }
+}
+.category-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+.category-label {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3b0764;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
 }
 
 /* ── 인기 꿈해몽 ── */

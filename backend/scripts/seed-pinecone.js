@@ -68,6 +68,7 @@ async function seed() {
       metadata: {
         dream: item.metadata.dream,
         dream_no: item.metadata.dream_no,
+        category: item.metadata.category ?? [],
         keywords: (item.metadata.keywords ?? []).join(', '),
         embed_text: texts[i],
         basic: item.metadata.interpretations.basic?.content ?? '',

@@ -24,6 +24,7 @@ const search = async (req, res) => {
       id: match.id,
       title: match.metadata.dream,
       dream_no: match.metadata.dream_no,
+      category: match.metadata.category,
       basic: match.metadata.basic,
       baby: match.metadata.baby,
       random: match.metadata.random,
