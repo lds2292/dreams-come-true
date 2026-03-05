@@ -2,7 +2,7 @@
   <header class="app-header">
     <div class="header-inner">
       <!-- 왼쪽: 로고 -->
-      <div class="header-logo">
+      <div class="header-logo" @click="$router.push('/')">
         <span class="logo-text">DreamsComeTrue</span>
       </div>
 
@@ -57,6 +57,10 @@ defineProps({
   padding: 0 16px;
   max-width: 600px;
   margin: 0 auto;
+}
+
+.header-logo {
+  cursor: pointer;
 }
 
 .logo-text {

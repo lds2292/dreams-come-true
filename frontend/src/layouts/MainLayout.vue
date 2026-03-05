@@ -4,7 +4,7 @@
     <AppHeader :has-notification="false" />
 
     <!-- 메인 컨텐츠 (스크롤 영역) -->
-    <main class="layout-content">
+    <main class="layout-content" ref="contentRef">
       <div class="content-body">
         <RouterView />
       </div>
@@ -21,14 +21,24 @@ import AppHeader from '@/components/layout/AppHeader.vue'
 import AppNavBar from '@/components/layout/AppNavBar.vue'
 import AppFooter from '@/components/layout/AppFooter.vue'
 import { RouterView } from 'vue-router'
+import { ref, watch, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
+
+const contentRef = ref(null)
+const route = useRoute()
+
+watch(() => route.path, async () => {
+  await nextTick()
+  if (contentRef.value) contentRef.value.scrollTop = 0
+})
 </script>
 
 <style scoped>
 .layout-wrapper {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   max-width: 600px;
   margin: 0 auto;
   background-color: #ffffff;
