@@ -353,7 +353,20 @@ onMounted(() => {
   border: 1px solid #f0f0f0;
   border-radius: 16px;
   padding: 16px;
-  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 20px rgba(91,33,182,0.08), 0 1px 4px rgba(0,0,0,0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+.result-card:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 10px rgba(91,33,182,0.06), 0 1px 2px rgba(0,0,0,0.04);
+}
+@media (hover: hover) {
+  .result-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(91,33,182,0.14), 0 2px 6px rgba(0,0,0,0.08);
+  }
 }
 .result-emoji {
   font-size: 30px;
