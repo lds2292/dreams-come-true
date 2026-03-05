@@ -60,9 +60,10 @@ defineProps({
 }
 
 .logo-text {
-  font-size: 18px;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 17px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #3b0764;
   letter-spacing: -0.3px;
 }
 

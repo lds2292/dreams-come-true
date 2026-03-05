@@ -1,8 +1,21 @@
+# 공통
 node_modules/
-dist/
-.env.local
-.env.*.local
 *.log
 .DS_Store
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env*.local
+
+# Backend
+backend/node_modules/
+backend/.env
+
+# IDE
 .idea/
 .vscode/
+
+# Tools
+.claude/
+.serena/

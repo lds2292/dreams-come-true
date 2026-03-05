@@ -3,32 +3,56 @@
 
     <!-- ───────── 히어로 ───────── -->
     <section class="hero">
-      <p class="hero-date">{{ todayLabel }}</p>
-      <h1 class="hero-title">오늘의 꿈, 오늘의 운세</h1>
-      <p class="hero-sub">당신의 꿈이 이루어지는 곳</p>
-
-      <!-- 검색창 -->
-      <div class="search-wrap">
-        <div class="search-box" :class="{ focused: searchFocused }">
-          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      <!-- 배경 장식 레이어 -->
+      <div class="hero-bg-layer" aria-hidden="true">
+        <div class="hero-radial"></div>
+        <!-- 별 파티클 -->
+        <span v-for="i in 22" :key="i" class="star" :class="'star-' + i"></span>
+        <!-- 달 장식 -->
+        <div class="moon-deco">
+          <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="40" r="28" fill="rgba(255,255,255,0.07)" />
+            <path d="M54 26C46 26 40 32.3 40 40C40 47.7 46 54 54 54C49 54 38 50 38 40C38 30 49 26 54 26Z" fill="rgba(255,255,255,0.15)" />
           </svg>
-          <input
-            v-model="searchQuery"
-            type="search"
-            class="search-input"
-            placeholder="당신의 꿈해몽을 도와드립니다"
-            enterkeyhint="search"
-            @focus="searchFocused = true"
-            @blur="searchFocused = false"
-            @keyup.enter="onSearch"
-          />
-          <button v-if="searchQuery" class="search-clear" @click="searchQuery = ''" aria-label="지우기">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </div>
+      </div>
+
+      <!-- 콘텐츠 -->
+      <div class="hero-content">
+        <p class="hero-date">{{ todayLabel }}</p>
+        <h1 class="hero-title">오늘의 꿈,<br>오늘의 운세</h1>
+        <p class="hero-sub">당신의 꿈이 이루어지는 곳</p>
+
+        <!-- 검색창 -->
+        <div class="search-wrap">
+          <div class="search-box" :class="{ focused: searchFocused }">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
+            <input
+              v-model="searchQuery"
+              type="search"
+              class="search-input"
+              placeholder="꿈 내용을 입력해 보세요"
+              enterkeyhint="search"
+              @focus="searchFocused = true"
+              @blur="searchFocused = false"
+              @keyup.enter="onSearch"
+            />
+            <button v-if="searchQuery" class="search-clear" @click="searchQuery = ''" aria-label="지우기">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- 빠른 키워드 -->
+        <div class="hero-keywords">
+          <button v-for="kw in quickKeywords" :key="kw" class="kw-chip" @click="searchQuery = kw; onSearch()">
+            {{ kw }}
           </button>
         </div>
       </div>
@@ -135,6 +159,9 @@ const todayLabel = computed(() => {
   return `${d.getFullYear()}년 ${d.getMonth() + 1}월 ${d.getDate()}일 ${['일', '월', '화', '수', '목', '금', '토'][d.getDay()]}요일`
 })
 
+// 히어로 빠른 검색 키워드
+const quickKeywords = ['용꿈', '돼지꿈', '하늘을 나는 꿈', '이가 빠지는 꿈', '물꿈']
+
 // 인기 꿈해몽
 const popularDreams = [
   { id: 1, emoji: '🐍', title: '뱀 꿈',         summary: '재물운이 상승하는 길몽. 사업이나 투자에 좋은 신호.',       tag: '재물', tagType: 'tag-money' },
@@ -190,50 +217,134 @@ const zodiacList = [
 
 /* ── 히어로 ── */
 .hero {
-  background: linear-gradient(135deg, #3b0764 0%, #5b21b6 60%, #7c3aed 100%);
-  padding: 32px 20px 28px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, #1e0533 0%, #3b0764 35%, #5b21b6 70%, #6d28d9 100%);
+  padding: 0;
   color: #fff;
 }
+
+/* 배경 레이어 */
+.hero-bg-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero-radial {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 80% 20%, rgba(167,139,250,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 10% 80%, rgba(109,40,217,0.3) 0%, transparent 55%);
+}
+
+/* 별 파티클 */
+.star {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite var(--delay, 0s);
+}
+@keyframes twinkle {
+  0%, 100% { opacity: var(--min-op, 0.2); transform: scale(1); }
+  50%       { opacity: var(--max-op, 0.9); transform: scale(1.3); }
+}
+
+/* 별 위치/크기/속도 개별 정의 */
+.star-1  { width:2px; height:2px; top:8%;  left:12%; --dur:2.8s; --delay:0s;    --min-op:0.3; --max-op:1;   }
+.star-2  { width:1px; height:1px; top:15%; left:28%; --dur:3.5s; --delay:0.4s;  --min-op:0.2; --max-op:0.8; }
+.star-3  { width:2px; height:2px; top:5%;  left:55%; --dur:2.2s; --delay:1.1s;  --min-op:0.4; --max-op:1;   }
+.star-4  { width:1px; height:1px; top:20%; left:70%; --dur:4.1s; --delay:0.7s;  --min-op:0.2; --max-op:0.7; }
+.star-5  { width:3px; height:3px; top:10%; left:85%; --dur:3.0s; --delay:0.2s;  --min-op:0.3; --max-op:0.9; }
+.star-6  { width:1px; height:1px; top:30%; left:8%;  --dur:2.5s; --delay:1.5s;  --min-op:0.2; --max-op:0.6; }
+.star-7  { width:2px; height:2px; top:25%; left:40%; --dur:3.8s; --delay:0.9s;  --min-op:0.3; --max-op:0.8; }
+.star-8  { width:1px; height:1px; top:18%; left:62%; --dur:2.9s; --delay:1.8s;  --min-op:0.2; --max-op:0.7; }
+.star-9  { width:2px; height:2px; top:35%; left:90%; --dur:3.3s; --delay:0.3s;  --min-op:0.3; --max-op:1;   }
+.star-10 { width:1px; height:1px; top:42%; left:22%; --dur:4.5s; --delay:2.0s;  --min-op:0.1; --max-op:0.5; }
+.star-11 { width:2px; height:2px; top:50%; left:75%; --dur:2.7s; --delay:1.3s;  --min-op:0.3; --max-op:0.9; }
+.star-12 { width:1px; height:1px; top:58%; left:48%; --dur:3.6s; --delay:0.6s;  --min-op:0.2; --max-op:0.6; }
+.star-13 { width:2px; height:2px; top:12%; left:94%; --dur:2.4s; --delay:2.2s;  --min-op:0.4; --max-op:1;   }
+.star-14 { width:1px; height:1px; top:38%; left:5%;  --dur:3.9s; --delay:1.0s;  --min-op:0.2; --max-op:0.7; }
+.star-15 { width:2px; height:2px; top:22%; left:50%; --dur:2.6s; --delay:1.7s;  --min-op:0.3; --max-op:0.9; }
+.star-16 { width:1px; height:1px; top:45%; left:35%; --dur:4.2s; --delay:0.5s;  --min-op:0.1; --max-op:0.5; }
+.star-17 { width:2px; height:2px; top:7%;  left:38%; --dur:3.1s; --delay:2.5s;  --min-op:0.3; --max-op:0.8; }
+.star-18 { width:1px; height:1px; top:55%; left:88%; --dur:2.9s; --delay:1.4s;  --min-op:0.2; --max-op:0.7; }
+.star-19 { width:3px; height:3px; top:3%;  left:72%; --dur:3.4s; --delay:0.8s;  --min-op:0.4; --max-op:1;   }
+.star-20 { width:1px; height:1px; top:60%; left:15%; --dur:4.0s; --delay:1.9s;  --min-op:0.1; --max-op:0.5; }
+.star-21 { width:2px; height:2px; top:28%; left:82%; --dur:2.3s; --delay:2.8s;  --min-op:0.3; --max-op:0.9; }
+.star-22 { width:1px; height:1px; top:47%; left:58%; --dur:3.7s; --delay:1.2s;  --min-op:0.2; --max-op:0.6; }
+
+/* 달 장식 */
+.moon-deco {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 110px;
+  height: 110px;
+  opacity: 0.6;
+  animation: moonFloat 6s ease-in-out infinite;
+}
+@keyframes moonFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+/* 히어로 콘텐츠 */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 36px 20px 28px;
+}
+
 .hero-date {
+  font-family: 'Noto Sans KR', sans-serif;
   font-size: 12px;
-  opacity: 0.75;
-  margin: 0 0 8px;
-  letter-spacing: 0.3px;
+  font-weight: 400;
+  opacity: 0.65;
+  margin: 0 0 12px;
+  letter-spacing: 0.8px;
 }
 .hero-title {
-  font-size: 22px;
-  font-weight: 800;
-  margin: 0 0 6px;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.25;
+  margin: 0 0 10px;
   letter-spacing: -0.5px;
+  text-shadow: 0 2px 20px rgba(109,40,217,0.6);
 }
 .hero-sub {
+  font-family: 'Noto Sans KR', sans-serif;
   font-size: 13px;
-  opacity: 0.8;
+  font-weight: 400;
+  opacity: 0.75;
   margin: 0;
+  letter-spacing: 0.2px;
 }
 
 /* ── 검색창 ── */
 .search-wrap {
-  margin-top: 20px;
+  margin-top: 22px;
 }
 .search-box {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1.5px solid rgba(255, 255, 255, 0.35);
-  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  border-radius: 16px;
   padding: 0 14px;
-  height: 50px;
-  transition: background 0.2s, border-color 0.2s;
-  backdrop-filter: blur(4px);
+  height: 52px;
+  transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
+  backdrop-filter: blur(8px);
 }
 .search-box.focused {
-  background: rgba(255, 255, 255, 0.25);
-  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 0 0 3px rgba(167,139,250,0.25);
 }
 .search-icon {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.75);
   flex-shrink: 0;
 }
 .search-input {
@@ -241,15 +352,15 @@ const zodiacList = [
   background: transparent;
   border: none;
   outline: none;
+  font-family: 'Noto Sans KR', sans-serif;
   font-size: 14px;
   color: #fff;
-  caret-color: #fff;
+  caret-color: #c4b5fd;
   min-width: 0;
 }
 .search-input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.5);
 }
-/* iOS에서 search 타입 기본 스타일 제거 */
 .search-input::-webkit-search-decoration,
 .search-input::-webkit-search-cancel-button {
   -webkit-appearance: none;
@@ -261,12 +372,38 @@ const zodiacList = [
   width: 22px;
   height: 22px;
   border: none;
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   cursor: pointer;
   color: #fff;
   flex-shrink: 0;
   padding: 0;
+}
+
+/* ── 빠른 키워드 ── */
+.hero-keywords {
+  display: flex;
+  gap: 7px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.kw-chip {
+  height: 28px;
+  padding: 0 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 20px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.kw-chip:active {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 /* ── 공통 섹션 ── */
