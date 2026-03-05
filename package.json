@@ -11,5 +11,8 @@
     "dev:backend": "npm run dev --workspace=backend",
     "build": "npm run build --workspace=frontend",
     "start:backend": "npm run start --workspace=backend"
+  },
+  "devDependencies": {
+    "playwright": "^1.58.2"
   }
 }
