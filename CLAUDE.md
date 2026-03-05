@@ -1,5 +1,10 @@
 # DreamsComeTrue — 프로젝트 컨텍스트
 
+## 세션 시작 시 자동 실행
+대화가 시작되면 **즉시** `mcp__serena__activate_project` 도구를 호출하여 Serena 프로젝트를 활성화하세요.
+이후 `mcp__serena__prepare_for_new_conversation` 도구를 호출하여 새 대화를 준비하세요.
+이 작업은 사용자가 별도로 요청하지 않아도 **항상** 수행해야 합니다.
+
 ## 프로젝트 개요
 꿈해몽·사주·운세 서비스를 위한 **Android WebView 대상 모바일 웹앱**.
 
