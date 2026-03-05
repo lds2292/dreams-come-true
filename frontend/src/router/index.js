@@ -36,6 +36,11 @@ const router = createRouter({
           path: 'my',
           name: 'my',
           component: () => import('@/views/MyView.vue')
+        },
+        {
+          path: 'dream/:id',
+          name: 'dream-detail',
+          component: () => import('@/views/DreamDetailView.vue')
         }
       ]
     }

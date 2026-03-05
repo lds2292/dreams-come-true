@@ -75,12 +75,18 @@
           <span class="count-badge">{{ results.length }}건</span>
         </p>
         <div class="result-list">
-          <div v-for="item in results" :key="item.id" class="result-card">
+          <div v-for="item in results" :key="item.id" class="result-card" @click="goToDetail(item)">
             <div class="result-emoji">{{ item.emoji }}</div>
             <div class="result-body">
               <div class="result-title-row">
                 <p class="result-title" v-html="highlight(item.title)"></p>
-                <span :class="['tag', item.tagType]">{{ item.tag }}</span>
+                <div class="result-badges">
+                  <span class="score-badge">{{ (item.score * 100).toFixed(1) }}%</span>
+                  <span :class="['tag', item.tagType]">{{ item.tag }}</span>
+                </div>
+              </div>
+              <div v-if="item.dreamTypes.length" class="dream-types">
+                <span v-for="type in item.dreamTypes" :key="type" :class="['dream-type-badge', `dt-${type}`]">{{ type }}</span>
               </div>
               <p class="result-summary">{{ item.summary }}</p>
               <p class="result-detail">{{ item.detail }}</p>
@@ -111,36 +117,61 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../api/index.js'
+import { useDreamStore } from '../stores/dream.js'
+import { useSearchStore } from '../stores/search.js'
 
-const route  = useRoute()
-const router = useRouter()
+const route       = useRoute()
+const router      = useRouter()
+const dreamStore  = useDreamStore()
+const searchStore = useSearchStore()
 
-const inputRef = ref(null)
-const query    = ref('')
-const focused  = ref(false)
-const loading  = ref(false)
-const submitted = ref(false)
-const lastQuery = ref('')
-const results  = ref([])
+const inputRef  = ref(null)
+const focused   = ref(false)
+const loading   = ref(false)
+const query     = ref(searchStore.query)
+const submitted = ref(searchStore.submitted)
+const lastQuery = ref(searchStore.lastQuery)
+const results   = ref(searchStore.results)
 
 // ── 데이터 ──────────────────────────────────────────
-const hotKeywords = ['용꿈', '돼지꿈', '뱀꿈', '이빨꿈', '물꿈']
+const hotKeywords = ['용꿈', '돼지꿈', '하늘을 나는 꿈', '돈꿈', '이빨꿈']
 
 const recentKeywords = ref(JSON.parse(localStorage.getItem('dct_recent') || '[]'))
 
-const EMOJI_MAP = { 용꿈: '🐉', 돼지꿈: '🐷', 뱀꿈: '🐍', 이빨꿈: '🦷', 물꿈: '🌊' }
-const TAG_TYPE_MAP = { 길몽: 'tag-good', 흉몽: 'tag-family', '길몽/흉몽': 'tag-emotion' }
+const DREAM_TYPE_LABELS = [
+  { key: 'fortune_telling', label: '예지몽' },
+  { key: 'reality',         label: '현실몽' },
+  { key: 'baby',            label: '태몽'   },
+  { key: 'random',          label: '잡몽'   },
+]
 
 function toCard(d) {
+  const basic = d.basic || ''
+  const dreamTypes = DREAM_TYPE_LABELS
+    .filter(({ key }) => d[key])
+    .map(({ label }) => label)
   return {
     id: d.id,
-    emoji: EMOJI_MAP[d.title] ?? '✨',
+    emoji: '✨',
     title: d.title,
-    tag: d.category,
-    tagType: TAG_TYPE_MAP[d.category] ?? 'tag-good',
-    summary: d.summary,
-    detail: d.interpretation,
+    tag: '꿈해몽',
+    tagType: 'tag-emotion',
+    summary: basic.length > 60 ? basic.slice(0, 60) + '…' : basic,
+    detail: basic,
+    score: d.score ?? 0,
+    dreamTypes,
+    // 상세 페이지용 원본 필드
+    basic: d.basic,
+    fortune_telling: d.fortune_telling,
+    reality: d.reality,
+    baby: d.baby,
+    random: d.random,
   }
+}
+
+function goToDetail(item) {
+  dreamStore.select(item)
+  router.push({ name: 'dream-detail', params: { id: item.id } })
 }
 
 // ── 유틸 ──────────────────────────────────────────
@@ -179,6 +210,7 @@ async function doSearch() {
     results.value = []
   } finally {
     loading.value = false
+    searchStore.save({ query: query.value, lastQuery: lastQuery.value, results: results.value, submitted: submitted.value })
   }
 }
 
@@ -191,6 +223,7 @@ function clearSearch() {
   query.value = ''
   submitted.value = false
   results.value = []
+  searchStore.clear()
   inputRef.value?.focus()
   router.replace({ path: '/search' })
 }
@@ -198,6 +231,10 @@ function clearSearch() {
 // ── 초기 진입 (URL 쿼리 처리) ──────────────────────
 onMounted(() => {
   const q = route.query.q
+  if (q && String(q) === searchStore.lastQuery && searchStore.results.length) {
+    // 뒤로가기: 스토어에 동일한 검색 결과가 있으면 복원
+    return
+  }
   if (q) {
     query.value = String(q)
     doSearch()
@@ -387,6 +424,21 @@ onMounted(() => {
   gap: 8px;
   margin-bottom: 4px;
 }
+.result-badges {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.score-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 20px;
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
 .result-title {
   font-size: 15px;
   font-weight: 700;
@@ -399,6 +451,23 @@ onMounted(() => {
   border-radius: 2px;
   padding: 0 1px;
 }
+.dream-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.dream-type-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.dt-예지몽 { background: #fef9c3; color: #854d0e; }
+.dt-현실몽 { background: #dbeafe; color: #1e40af; }
+.dt-태몽   { background: #fce7f3; color: #9d174d; }
+.dt-잡몽   { background: #f1f5f9; color: #475569; }
+
 .result-summary {
   font-size: 13px;
   color: #555;
