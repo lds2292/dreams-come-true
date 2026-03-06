@@ -16,7 +16,7 @@
 - 문구: "이 꿈해몽이 도움이 되셨나요?"
 - 버튼: 👍 도움됐어요 / 👎 아쉬워요
 - 응답 후: "감사합니다 🙏" 메시지로 교체 (재응답 불가)
-- 중복 방지: `localStorage`에 응답한 dreamId 저장, 재방문 시 기존 응답 상태 표시
+- 중복 방지: `localStorage` 단일 키 `dct_fb`에 `{ [dreamId]: "helpful" | "unhelpful" }` 맵으로 저장, 재방문 시 기존 응답 상태 표시
 
 ### 백엔드 API
 
@@ -43,6 +43,15 @@ Response:
 - 파일: `backend/data/feedback.jsonl` (줄 단위 append-only JSON)
 - `.gitignore`에 추가하여 실제 사용자 데이터가 커밋되지 않도록 관리
 - 나중에 DB로 교체할 때 API 스펙은 그대로 유지
+
+> **localStorage 중복 방지 설계 노트**
+> 꿈 ID마다 별도 키(`dct_fb_ACT-1`, `dct_fb_ANIMAL-5` ...)를 생성하면 키가 무한 누적되므로,
+> `dct_fb` 단일 키에 객체 맵으로 통합 관리한다.
+> ```
+> // dct_fb (localStorage)
+> { "ANIMAL-42": "helpful", "ACT-10": "unhelpful", "ai-1741234567": "helpful" }
+> ```
+> DB 전환 후에는 서버에서 중복 방지를 처리하므로 localStorage 의존도가 없어진다.
 
 저장 예시:
 ```
@@ -96,6 +105,7 @@ frontend/
 - **API 스펙은 변경하지 않는다**: 라우트(`/api/dreams/feedback`)와 Request/Response 형식을 그대로 유지
 - **컨트롤러만 교체**: `feedbackController.js` 내부 저장 로직만 파일 → DB로 변경
 - **프론트엔드는 무변경**: API 스펙이 유지되므로 프론트 코드 수정 불필요
+- **localStorage 제거 가능**: DB 전환 후 서버에서 중복 방지를 처리하면 `dct_fb` 키 의존 제거 가능 (선택 사항)
 
 ```
 변경 범위:
