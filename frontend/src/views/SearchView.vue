@@ -30,17 +30,7 @@
 
     <!-- ── 초기 상태: 추천 검색어 ── -->
     <div v-if="!submitted" class="suggest-area">
-      <p class="suggest-label">인기 검색어</p>
-      <div class="suggest-chips">
-        <button
-          v-for="kw in hotKeywords"
-          :key="kw"
-          class="chip"
-          @click="selectKeyword(kw)"
-        >{{ kw }}</button>
-      </div>
-
-      <p class="suggest-label" style="margin-top:20px">최근 검색어</p>
+      <p class="suggest-label">최근 검색어</p>
       <div v-if="recentKeywords.length" class="recent-list">
         <div v-for="kw in recentKeywords" :key="kw" class="recent-item">
           <button class="recent-text" @click="selectKeyword(kw)">
