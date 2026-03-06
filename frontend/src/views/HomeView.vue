@@ -52,10 +52,13 @@
         <!-- 최근 검색어 -->
         <div v-if="recentKeywords.length" class="hero-recent">
           <div class="hero-recent-header">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/>
-            </svg>
-            <span>최근 검색</span>
+            <div class="hero-recent-left">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/>
+              </svg>
+              <span>최근 검색</span>
+            </div>
+            <button class="hero-recent-clear" @click="clearRecent">전체 삭제</button>
           </div>
           <div class="hero-keywords">
             <button v-for="kw in recentKeywords.slice(0, 5)" :key="kw" class="kw-chip kw-chip-recent" @click="searchQuery = kw; onSearch()">
@@ -76,9 +79,44 @@
           class="category-btn"
           @click="onCategoryClick(cat.label)"
         >
-          <img :src="cat.icon" :alt="cat.label" class="category-icon" />
+          <component :is="cat.icon" class="category-icon" />
           <span class="category-label">{{ cat.label }}</span>
+          <span class="category-count">{{ cat.count.toLocaleString() }}개</span>
         </button>
+      </div>
+    </section>
+
+    <!-- ───────── 오늘의 꿈해몽 ───────── -->
+    <section class="section">
+      <div class="section-head">
+        <h2 class="section-title">🌙 오늘의 꿈해몽</h2>
+        <span class="daily-date">{{ todayLabel }}</span>
+      </div>
+
+      <!-- 에러 -->
+      <div v-if="dailyError" class="daily-error">오늘의 꿈해몽을 불러올 수 없습니다.</div>
+
+      <!-- 로딩 -->
+      <div v-else-if="dailyLoading" class="daily-skeleton">
+        <div class="skeleton-line long"></div>
+        <div class="skeleton-line short"></div>
+        <div class="skeleton-line medium"></div>
+      </div>
+
+      <!-- 카드 -->
+      <div v-else-if="dailyDream" class="daily-card" @click="goToDailyDetail">
+        <div class="daily-top">
+          <span class="daily-category">{{ dailyDream.category }}</span>
+        </div>
+        <h3 class="daily-title">{{ dailyDream.title }}</h3>
+        <p class="daily-summary">{{ dailyDream.basic?.slice(0, 80) }}{{ dailyDream.basic?.length > 80 ? '…' : '' }}</p>
+        <div class="daily-footer">
+          <span class="daily-more">자세히 보기
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+            </svg>
+          </span>
+        </div>
       </div>
     </section>
 
@@ -131,8 +169,8 @@
       </div>
     </section> -->
 
-    <!-- ───────── 십이지신 운세 ───────── -->
-    <section class="section">
+    <!-- ───────── 십이지신 운세 (PoC 비노출 — TODO: 활성화) ───────── -->
+    <!-- <section class="section">
       <div class="section-head">
         <h2 class="section-title">🐉 십이지신 오늘의 운세</h2>
         <a href="#" class="section-more">전체보기</a>
@@ -154,24 +192,137 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
 
   </div>
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, defineComponent, h } from 'vue'
 import { useRouter } from 'vue-router'
+import api from '../api/index.js'
+import { useDreamStore } from '../stores/dream.js'
 
-const router = useRouter()
+// ── 카테고리 SVG 아이콘 컴포넌트 ────────────────────
+const S = '#C4B5FD'  // 아이콘 공통 색상
+const sw = '1.8'     // stroke-width
+
+const IconPerson = defineComponent({ setup() { return () => h('svg', { viewBox: '0 0 40 40', fill: 'none', xmlns: 'http://www.w3.org/2000/svg' }, [
+  h('circle', { cx: '20', cy: '12', r: '5', stroke: S, 'stroke-width': sw }),
+  h('path', { d: 'M9 35c0-6.1 4.9-11 11-11s11 4.9 11 11', stroke: S, 'stroke-width': sw, 'stroke-linecap': 'round' }),
+  h('path', { d: 'M31 10C30 9.5 27 7.5 27 5.5C27 4 28 3.5 29 3.5C30 3.5 30.5 4 31 4.5C31.5 4 32 3.5 33 3.5C34 3.5 35 4 35 5.5C35 7.5 32 9.5 31 10Z', fill: S }),
+]) }})
+
+const IconAnimal = defineComponent({ setup() { return () => h('svg', { viewBox: '0 0 40 40', fill: 'none', xmlns: 'http://www.w3.org/2000/svg' }, [
+  h('ellipse', { cx: '20', cy: '27', rx: '7', ry: '8', stroke: S, 'stroke-width': sw }),
+  h('circle',  { cx: '11', cy: '17', r: '3',   stroke: S, 'stroke-width': sw }),
+  h('circle',  { cx: '29', cy: '17', r: '3',   stroke: S, 'stroke-width': sw }),
+  h('circle',  { cx: '15', cy: '11', r: '2.5', stroke: S, 'stroke-width': sw }),
+  h('circle',  { cx: '25', cy: '11', r: '2.5', stroke: S, 'stroke-width': sw }),
+]) }})
+
+const IconAction = defineComponent({ setup() { return () => h('svg', { viewBox: '0 0 40 40', fill: 'none', xmlns: 'http://www.w3.org/2000/svg' }, [
+  h('path', { d: 'M23 5L12 22h10l-5 13L33 17H22L23 5z', stroke: S, 'stroke-width': sw, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }),
+]) }})
+
+const IconDeath = defineComponent({ setup() { return () => h('svg', { viewBox: '0 0 40 40', fill: 'none', xmlns: 'http://www.w3.org/2000/svg' }, [
+  h('path', { d: 'M20 8c-6.6 0-12 5.4-12 12 0 4 2 7.6 5 9.8V34h14v-4.2c3-2.2 5-5.8 5-9.8 0-6.6-5.4-12-12-12z', stroke: S, 'stroke-width': sw, 'stroke-linejoin': 'round' }),
+  h('circle', { cx: '15.5', cy: '21', r: '2', fill: S }),
+  h('circle', { cx: '24.5', cy: '21', r: '2', fill: S }),
+  h('path', { d: 'M17 34v2h6v-2', stroke: S, 'stroke-width': sw, 'stroke-linecap': 'round' }),
+]) }})
+
+const IconNature = defineComponent({ setup() { return () => h('svg', { viewBox: '0 0 40 40', fill: 'none', xmlns: 'http://www.w3.org/2000/svg' }, [
+  h('circle', { cx: '20', cy: '20', r: '6', stroke: S, 'stroke-width': sw }),
+  ...[[20,5,20,10],[20,30,20,35],[5,20,10,20],[30,20,35,20],
+      [9.4,9.4,12.8,12.8],[27.2,27.2,30.6,30.6],
+      [30.6,9.4,27.2,12.8],[9.4,30.6,12.8,27.2]].map(([x1,y1,x2,y2]) =>
+    h('line', { x1: String(x1), y1: String(y1), x2: String(x2), y2: String(y2), stroke: S, 'stroke-width': sw, 'stroke-linecap': 'round' })
+  ),
+]) }})
+
+const IconGoods = defineComponent({ setup() { return () => h('svg', { viewBox: '0 0 40 40', fill: 'none', xmlns: 'http://www.w3.org/2000/svg' }, [
+  h('path', { d: 'M10 17h18v12c0 2.2-1.8 4-4 4H14c-2.2 0-4-1.8-4-4V17z', stroke: S, 'stroke-width': sw }),
+  h('path', { d: 'M28 21h3c1.7 0 3 1.3 3 3s-1.3 3-3 3h-3', stroke: S, 'stroke-width': sw, 'stroke-linecap': 'round' }),
+  h('path', { d: 'M15 13c0-1.2.8-2 .8-3', stroke: S, 'stroke-width': sw, 'stroke-linecap': 'round' }),
+  h('path', { d: 'M20 12c0-1.2.8-2 .8-3', stroke: S, 'stroke-width': sw, 'stroke-linecap': 'round' }),
+  h('path', { d: 'M25 13c0-1.2.8-2 .8-3', stroke: S, 'stroke-width': sw, 'stroke-linecap': 'round' }),
+]) }})
+
+const router     = useRouter()
+const dreamStore = useDreamStore()
 
 // 검색
 const searchQuery = ref('')
 const searchFocused = ref(false)
 const recentKeywords = ref([])
 
+// ── 오늘의 꿈해몽 ────────────────────────────────────
+const dailyDream  = ref(null)
+const dailyLoading = ref(true)
+const dailyError  = ref(false)
+
+const TODAY = new Date().toISOString().slice(0, 10)
+const DAILY_KEY = `dct_daily_${TODAY}`
+
+async function loadDailyDream() {
+  // 오늘 이미 받아온 경우 캐시 사용
+  const cached = localStorage.getItem(DAILY_KEY)
+  if (cached) {
+    const parsed = JSON.parse(cached)
+    // category가 배열로 캐시된 구버전 데이터 무효화
+    if (Array.isArray(parsed.category)) {
+      localStorage.removeItem(DAILY_KEY)
+    } else {
+      dailyDream.value = parsed
+      dailyLoading.value = false
+      return
+    }
+  }
+  try {
+    const data = await api.get('/dreams/daily')
+    dailyDream.value = data
+    localStorage.setItem(DAILY_KEY, JSON.stringify(data))
+    // 이전 날짜 캐시 제거
+    Object.keys(localStorage)
+      .filter(k => k.startsWith('dct_daily_') && k !== DAILY_KEY)
+      .forEach(k => localStorage.removeItem(k))
+  } catch {
+    dailyError.value = true
+  } finally {
+    dailyLoading.value = false
+  }
+}
+
+function goToDailyDetail() {
+  if (!dailyDream.value) return
+  const DREAM_TYPE_LABELS = [
+    { key: 'fortune_telling', label: '예지몽' },
+    { key: 'reality',         label: '현실몽' },
+    { key: 'baby',            label: '태몽'   },
+    { key: 'random',          label: '잡몽'   },
+  ]
+  dreamStore.select({
+    ...dailyDream.value,
+    emoji:       '🌙',
+    tag:         '꿈해몽',
+    tagType:     'tag-emotion',
+    summary:     (dailyDream.value.basic || '').slice(0, 60),
+    detail:      dailyDream.value.basic,
+    aiGenerated: false,
+    dreamTypes:  DREAM_TYPE_LABELS.filter(({ key }) => dailyDream.value[key]).map(({ label }) => label),
+  })
+  router.push({ name: 'dream-detail', params: { id: dailyDream.value.id } })
+}
+
+function clearRecent() {
+  recentKeywords.value = []
+  localStorage.removeItem('dct_recent')
+}
+
 onMounted(() => {
   recentKeywords.value = JSON.parse(localStorage.getItem('dct_recent') || '[]')
+  loadDailyDream()
 })
 
 function onSearch() {
@@ -187,12 +338,12 @@ const todayLabel = computed(() => {
 
 // 꿈해몽 카테고리
 const dreamCategories = [
-  { icon: new URL('@/assets/icons/categ_icon_feel.png', import.meta.url).href, label: '사람/감정' },
-  { icon: new URL('@/assets/icons/icon_apple.png',      import.meta.url).href, label: '동물/식물' },
-  { icon: new URL('@/assets/icons/icon_act.png',        import.meta.url).href, label: '행동'      },
-  { icon: new URL('@/assets/icons/icon_death.png',      import.meta.url).href, label: '죽음/영혼' },
-  { icon: new URL('@/assets/icons/icon_sun.png',        import.meta.url).href, label: '자연현상'  },
-  { icon: new URL('@/assets/icons/icon_teapot.png',     import.meta.url).href, label: '생활용품'  },
+  { icon: IconPerson, label: '사람/감정', count: 392 },
+  { icon: IconAnimal, label: '동물/식물', count: 731 },
+  { icon: IconAction, label: '행동',      count: 115 },
+  { icon: IconDeath,  label: '죽음/영혼', count:  67 },
+  { icon: IconNature, label: '자연현상',  count: 257 },
+  { icon: IconGoods,  label: '생활용품',  count: 510 },
 ]
 
 function onCategoryClick(category) {
@@ -424,13 +575,26 @@ const zodiacList = [
 .hero-recent-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.hero-recent-left {
+  display: flex;
+  align-items: center;
   gap: 4px;
   color: rgba(255, 255, 255, 0.5);
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.3px;
-  margin-bottom: 8px;
+}
+.hero-recent-clear {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
 }
 .hero-keywords {
   display: flex;
@@ -516,7 +680,6 @@ const zodiacList = [
 .category-icon {
   width: 40px;
   height: 40px;
-  object-fit: contain;
 }
 .category-label {
   font-family: 'Noto Sans KR', sans-serif;
@@ -525,6 +688,13 @@ const zodiacList = [
   color: #C4B5FD;
   letter-spacing: -0.2px;
   white-space: nowrap;
+}
+.category-count {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: #55516E;
+  letter-spacing: -0.2px;
 }
 
 /* ── 인기 꿈해몽 ── */
@@ -769,4 +939,89 @@ const zodiacList = [
 }
 .star-on  { color: #f59e0b; }
 .star-off { color: #2E2C42; }
+
+/* ── 오늘의 꿈해몽 ── */
+.daily-error {
+  font-size: 13px;
+  color: #55516E;
+  text-align: center;
+  padding: 20px 0;
+}
+.daily-date {
+  font-size: 12px;
+  color: #6B6888;
+}
+.daily-skeleton {
+  background: #1B1A2E;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.skeleton-line {
+  height: 14px;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #2E2C42 25%, #3A3858 50%, #2E2C42 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-line.long   { width: 75%; }
+.skeleton-line.medium { width: 55%; }
+.skeleton-line.short  { width: 40%; }
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.daily-card {
+  background: #1B1A2E;
+  border-radius: 14px;
+  border-left: 3px solid #7C3AED;
+  padding: 18px;
+  cursor: pointer;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.daily-card:active {
+  background: #22213A;
+}
+.daily-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.daily-category {
+  font-size: 11px;
+  font-weight: 600;
+  color: #A78BFA;
+  background: rgba(167, 139, 250, 0.12);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+.daily-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #F2F0FF;
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+.daily-summary {
+  font-size: 13px;
+  color: #8882A8;
+  margin: 0 0 14px;
+  line-height: 1.6;
+}
+.daily-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+.daily-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #A78BFA;
+}
 </style>
