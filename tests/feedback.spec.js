@@ -84,9 +84,7 @@ test.describe('피드백 섹션', () => {
     // localStorage 초기화 (이전 응답 제거)
     await page.goto('/');
     await page.evaluate(() => {
-      Object.keys(localStorage)
-        .filter(k => k.startsWith('dct_fb_'))
-        .forEach(k => localStorage.removeItem(k));
+      localStorage.removeItem('dct_fb');
     });
 
     await goToDetail(page);
@@ -102,9 +100,7 @@ test.describe('피드백 섹션', () => {
   test('👎 아쉬워요 클릭 시 감사 메시지로 전환된다', async ({ page }) => {
     await page.goto('/');
     await page.evaluate(() => {
-      Object.keys(localStorage)
-        .filter(k => k.startsWith('dct_fb_'))
-        .forEach(k => localStorage.removeItem(k));
+      localStorage.removeItem('dct_fb');
     });
 
     await goToDetail(page);
@@ -126,7 +122,9 @@ test.describe('피드백 섹션', () => {
 
     if (dreamId) {
       await page.evaluate((id) => {
-        localStorage.setItem(`dct_fb_${id}`, 'helpful');
+        const map = JSON.parse(localStorage.getItem('dct_fb') || '{}');
+        map[id] = 'helpful';
+        localStorage.setItem('dct_fb', JSON.stringify(map));
       }, dreamId);
     } else {
       // data-id가 없으면 직접 클릭 후 localStorage 확인으로 대체

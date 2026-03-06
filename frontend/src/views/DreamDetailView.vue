@@ -109,22 +109,25 @@ const searchStore = useSearchStore()
 const dream       = computed(() => dreamStore.selectedDream)
 
 // ── 피드백 ──────────────────────────────────────────
+const FB_KEY = 'dct_fb'
 const feedbackSubmitted = ref(false)
 
-function getFeedbackKey(id) {
-  return `dct_fb_${id}`
+function getFeedbackMap() {
+  try { return JSON.parse(localStorage.getItem(FB_KEY) || '{}') } catch { return {} }
 }
 
 onMounted(() => {
   if (dream.value) {
-    feedbackSubmitted.value = !!localStorage.getItem(getFeedbackKey(dream.value.id))
+    feedbackSubmitted.value = !!getFeedbackMap()[dream.value.id]
   }
 })
 
 async function submitFeedback(helpful) {
   if (!dream.value || feedbackSubmitted.value) return
   feedbackSubmitted.value = true
-  localStorage.setItem(getFeedbackKey(dream.value.id), helpful ? 'helpful' : 'unhelpful')
+  const map = getFeedbackMap()
+  map[dream.value.id] = helpful ? 'helpful' : 'unhelpful'
+  localStorage.setItem(FB_KEY, JSON.stringify(map))
   try {
     await api.post('/feedback', {
       dreamId:     dream.value.id,
