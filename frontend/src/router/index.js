@@ -21,9 +21,9 @@ const router = createRouter({
           component: () => import('@/views/SearchView.vue')
         },
         {
-          path: 'notify',
-          name: 'notify',
-          component: () => import('@/views/NotifyView.vue')
+          path: 'symbol',
+          name: 'symbol',
+          component: () => import('@/views/SymbolView.vue')
         },
         {
           path: 'my',
@@ -34,6 +34,11 @@ const router = createRouter({
           path: 'dream/:id',
           name: 'dream-detail',
           component: () => import('@/views/DreamDetailView.vue')
+        },
+        {
+          path: 'category',
+          name: 'category',
+          component: () => import('@/views/CategoryView.vue')
         }
       ]
     }

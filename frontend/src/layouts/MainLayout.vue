@@ -6,7 +6,11 @@
     <!-- 메인 컨텐츠 (스크롤 영역) -->
     <main class="layout-content" ref="contentRef">
       <div class="content-body">
-        <RouterView />
+        <RouterView v-slot="{ Component }">
+          <keep-alive include="CategoryView">
+            <component :is="Component" />
+          </keep-alive>
+        </RouterView>
       </div>
       <AppFooter />
     </main>
@@ -29,7 +33,10 @@ const route = useRoute()
 
 watch(() => route.path, async () => {
   await nextTick()
-  if (contentRef.value) contentRef.value.scrollTop = 0
+  // keep-alive로 캐시된 CategoryView는 자체적으로 스크롤 복원하므로 제외
+  if (contentRef.value && route.name !== 'category') {
+    contentRef.value.scrollTop = 0
+  }
 })
 </script>
 

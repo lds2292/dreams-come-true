@@ -347,7 +347,7 @@ const dreamCategories = [
 ]
 
 function onCategoryClick(category) {
-  router.push({ path: '/search', query: { category } })
+  router.push({ name: 'category', query: { name: category } })
 }
 
 // 인기 꿈해몽
