@@ -13,6 +13,7 @@
     "start:backend": "npm run start --workspace=backend"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "playwright": "^1.58.2"
   }
 }
