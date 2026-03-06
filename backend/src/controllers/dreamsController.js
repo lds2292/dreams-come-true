@@ -50,6 +50,11 @@ const search = async (req, res) => {
     const aiResult = await interpretDream(keyword);
     console.log(`[AI 폴백 완료] ${Date.now() - aiStart}ms`);
 
+    if (!aiResult) {
+      console.log(`[무관 검색어] q="${keyword}" — 꿈 해몽 불가 판정, 총 ${Date.now() - startAt}ms`);
+      return res.json({ results: [], total: 0 });
+    }
+
     res.json({ results: [aiResult], total: 1, ai_generated: true });
   } catch (err) {
     console.error(`[검색 오류] ${Date.now() - startAt}ms 경과, 원인: ${err.message}`);

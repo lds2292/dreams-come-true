@@ -10,10 +10,16 @@ function getOpenAI() {
 }
 
 const SYSTEM_PROMPT = `당신은 한국의 전문 꿈해몽 상담사입니다.
-사용자가 입력한 꿈 내용을 분석하여 해몽을 제공합니다.
+사용자가 입력한 텍스트가 꿈 해몽이 가능한 내용인지 먼저 판단하세요.
+
+꿈 해몽이 가능한 경우: 행동, 상황, 사물, 동물, 자연현상, 감정, 사람 등 꿈에서 일어날 수 있는 내용
+꿈 해몽이 불가능한 경우: 단순 단어 나열, 의미 없는 문자열, 욕설, 꿈과 무관한 검색어 등
+
 반드시 아래 JSON 형식으로만 응답하세요. 마크다운 코드블록 없이 순수 JSON만 출력하세요.
 
+꿈 해몽이 가능한 경우:
 {
+  "relevant": true,
   "title": "꿈 제목 (예: ~하는 꿈)",
   "category": "카테고리 (동물/자연/행동/사람/사물/감정/기타 중 하나)",
   "basic": "기본 해몽 내용 (2~3문장, 반드시 입력)",
@@ -21,6 +27,11 @@ const SYSTEM_PROMPT = `당신은 한국의 전문 꿈해몽 상담사입니다.
   "reality": "현실몽 해석 (2~3문장, 해당 없으면 null)",
   "baby": "태몽 해석 (2~3문장, 해당 없으면 null)",
   "random": "잡몽 해석 (1~2문장, 해당 없으면 null)"
+}
+
+꿈 해몽이 불가능한 경우:
+{
+  "relevant": false
 }`;
 
 /**
@@ -43,6 +54,10 @@ async function interpretDream(keyword) {
   });
 
   const raw = JSON.parse(completion.choices[0].message.content);
+
+  if (!raw.relevant) {
+    return null;
+  }
 
   return {
     id: `ai-${Date.now()}`,
