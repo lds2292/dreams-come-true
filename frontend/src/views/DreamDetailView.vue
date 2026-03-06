@@ -25,7 +25,6 @@
         <div class="hero-moon">🌙</div>
         <div class="hero-body">
           <div class="detail-badges">
-            <span class="score-badge">✦ 유사도 {{ (dream.score * 100).toFixed(1) }}%</span>
             <span v-for="type in dream.dreamTypes" :key="type" :class="['dream-type-badge', `dt-${type}`]">{{ type }}</span>
           </div>
           <h1 class="detail-title">{{ dream.title }}</h1>
@@ -33,7 +32,7 @@
       </div>
 
       <!-- 해몽 섹션 -->
-      <div class="sections">
+      <div class="sections" ref="sectionsRef">
         <div v-if="dream.basic" class="section section-basic" style="--delay:0.05s">
           <div class="section-header">
             <span class="section-icon">📖</span>
@@ -71,18 +70,72 @@
         </div>
       </div>
 
+        <!-- 피드백 섹션 -->
+        <div class="feedback-section">
+          <!-- 미응답 상태 -->
+          <template v-if="!feedbackSubmitted">
+            <p class="feedback-question">이 꿈해몽이 도움이 되셨나요?</p>
+            <div class="feedback-buttons">
+              <button class="feedback-btn btn-helpful" @click="submitFeedback(true)">
+                👍 도움됐어요
+              </button>
+              <button class="feedback-btn btn-unhelpful" @click="submitFeedback(false)">
+                👎 아쉬워요
+              </button>
+            </div>
+          </template>
+
+          <!-- 응답 완료 상태 -->
+          <template v-else>
+            <p class="feedback-done-title">감사합니다</p>
+            <p class="feedback-done-desc">소중한 피드백이 큰 도움이 됩니다.</p>
+          </template>
+        </div>
+
     </template>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useDreamStore } from '../stores/dream.js'
+import { useSearchStore } from '../stores/search.js'
+import api from '../api/index.js'
 
-const router = useRouter()
-const dreamStore = useDreamStore()
-const dream = computed(() => dreamStore.selectedDream)
+const router      = useRouter()
+const dreamStore  = useDreamStore()
+const searchStore = useSearchStore()
+const dream       = computed(() => dreamStore.selectedDream)
+
+// ── 피드백 ──────────────────────────────────────────
+const feedbackSubmitted = ref(false)
+
+function getFeedbackKey(id) {
+  return `dct_fb_${id}`
+}
+
+onMounted(() => {
+  if (dream.value) {
+    feedbackSubmitted.value = !!localStorage.getItem(getFeedbackKey(dream.value.id))
+  }
+})
+
+async function submitFeedback(helpful) {
+  if (!dream.value || feedbackSubmitted.value) return
+  feedbackSubmitted.value = true
+  localStorage.setItem(getFeedbackKey(dream.value.id), helpful ? 'helpful' : 'unhelpful')
+  try {
+    await api.post('/feedback', {
+      dreamId:     dream.value.id,
+      query:       searchStore.lastQuery,
+      helpful,
+      aiGenerated: dream.value.aiGenerated ?? false,
+    })
+  } catch {
+    // 피드백 전송 실패는 사용자에게 노출하지 않음
+  }
+}
 
 function starStyle(n) {
   const seed = n * 137.508
@@ -180,16 +233,6 @@ function starStyle(n) {
   flex-wrap: wrap;
   gap: 6px;
 }
-.score-badge {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 11px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.15);
-  color: #d8b4fe;
-  border: 1px solid rgba(216,180,254,0.4);
-  letter-spacing: 0.3px;
-}
 .dream-type-badge {
   font-size: 11px;
   font-weight: 700;
@@ -265,6 +308,43 @@ function starStyle(n) {
   white-space: pre-wrap;
   word-break: keep-all;
 }
+
+/* ── 피드백 ── */
+.feedback-section {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+.feedback-question {
+  font-size: 14px;
+  font-weight: 600;
+  color: #C0BDD8;
+  margin: 0;
+}
+.feedback-buttons {
+  display: flex;
+  gap: 10px;
+}
+.feedback-btn {
+  height: 42px;
+  padding: 0 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.feedback-btn:active { transform: scale(0.95); opacity: 0.8; }
+.btn-helpful   { background: rgba(16,185,129,0.15); color: #34d399; border-color: rgba(16,185,129,0.3); }
+.btn-unhelpful { background: rgba(239,68,68,0.12);  color: #f87171; border-color: rgba(239,68,68,0.25); }
+
+.feedback-done-title { font-size: 16px; font-weight: 700; color: #F2F0FF; margin: 0; }
+.feedback-done-desc  { font-size: 13px; color: #55516E; margin: 0; }
 
 /* ── 데이터 없음 ── */
 .no-data {

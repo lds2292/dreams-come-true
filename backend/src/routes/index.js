@@ -9,5 +9,6 @@ router.get('/health', (req, res) => {
 // router.use('/auth', require('./auth'));
 
 router.use('/dreams', require('./dreams'));
+router.use('/feedback', require('./feedback'));
 
 module.exports = router;
