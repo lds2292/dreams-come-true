@@ -3,16 +3,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import('@/views/LoginView.vue')
-    },
-    {
-      path: '/signup',
-      name: 'signup',
-      component: () => import('@/views/SignupView.vue')
-    },
+    // TODO: 로그인/회원가입 기능 미제공 — 재활성화 시 아래 주석 해제
+    // { path: '/login',  name: 'login',  component: () => import('@/views/LoginView.vue') },
+    // { path: '/signup', name: 'signup', component: () => import('@/views/SignupView.vue') },
     {
       path: '/',
       component: () => import('@/layouts/MainLayout.vue'),
