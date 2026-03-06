@@ -30,7 +30,10 @@
 
     <!-- ── 초기 상태: 추천 검색어 ── -->
     <div v-if="!submitted" class="suggest-area">
-      <p class="suggest-label">최근 검색어</p>
+      <div class="suggest-label-row">
+        <p class="suggest-label">최근 검색어</p>
+        <button v-if="recentKeywords.length" class="recent-clear-all" @click="clearRecent">전체 삭제</button>
+      </div>
       <div v-if="recentKeywords.length" class="recent-list">
         <div v-for="kw in recentKeywords" :key="kw" class="recent-item">
           <button class="recent-text" @click="selectKeyword(kw)">
@@ -66,7 +69,9 @@
         </p>
         <div class="result-list">
           <div v-for="item in results" :key="item.id" :class="['result-card', { 'result-card-ai': item.aiGenerated }]" @click="goToDetail(item)">
-            <div class="result-emoji">{{ item.emoji }}</div>
+            <div :class="['result-icon', item.aiGenerated ? 'result-icon-ai' : 'result-icon-dream']">
+              <component :is="item.aiGenerated ? IconAI : IconDream" />
+            </div>
             <div class="result-body">
               <div class="result-title-row">
                 <p class="result-title" v-html="highlight(item.title)"></p>
@@ -104,11 +109,44 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, defineComponent, h } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../api/index.js'
 import { useDreamStore } from '../stores/dream.js'
 import { useSearchStore } from '../stores/search.js'
+
+// ── 검색결과 카드 아이콘 ─────────────────────────────
+// 일반 꿈해몽: 초승달 + 별
+const IconDream = defineComponent({
+  render() {
+    return h('svg', { viewBox: '0 0 24 24', fill: 'none', xmlns: 'http://www.w3.org/2000/svg', width: '26', height: '26' }, [
+      // 초승달
+      h('path', { d: 'M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z', fill: '#A78BFA' }),
+      // 큰 별
+      h('circle', { cx: '18.5', cy: '4.5', r: '1.2', fill: '#C4B5FD' }),
+      // 중간 별
+      h('circle', { cx: '15', cy: '2.5', r: '0.8', fill: '#DDD6FE' }),
+      // 작은 별
+      h('circle', { cx: '21', cy: '8', r: '0.7', fill: '#C4B5FD' }),
+    ])
+  }
+})
+
+// AI꿈해몽: 스파클 + 신경망 노드
+const IconAI = defineComponent({
+  render() {
+    return h('svg', { viewBox: '0 0 24 24', fill: 'none', xmlns: 'http://www.w3.org/2000/svg', width: '26', height: '26' }, [
+      // 중앙 스파클 (4-pointed star)
+      h('path', { d: 'M12 3L13.2 9.8L20 11L13.2 12.2L12 19L10.8 12.2L4 11L10.8 9.8Z', fill: '#60a5fa' }),
+      // 작은 스파클 우상단
+      h('path', { d: 'M19 2L19.6 4.4L22 5L19.6 5.6L19 8L18.4 5.6L16 5L18.4 4.4Z', fill: '#93c5fd' }),
+      // 점 좌하단
+      h('circle', { cx: '5', cy: '19', r: '1.2', fill: '#93c5fd' }),
+      // 연결선 (노드 느낌)
+      h('line', { x1: '6', y1: '18', x2: '10', y2: '14', stroke: '#3b82f6', 'stroke-width': '1', 'stroke-opacity': '0.5', 'stroke-linecap': 'round' }),
+    ])
+  }
+})
 
 const route       = useRoute()
 const isDebug     = computed(() => route.query.debug === '1')
@@ -176,6 +214,11 @@ function saveRecent(kw) {
 function removeRecent(kw) {
   recentKeywords.value = recentKeywords.value.filter(k => k !== kw)
   localStorage.setItem('dct_recent', JSON.stringify(recentKeywords.value))
+}
+
+function clearRecent() {
+  recentKeywords.value = []
+  localStorage.removeItem('dct_recent')
 }
 
 function highlight(text) {
@@ -297,13 +340,27 @@ onMounted(() => {
 
 /* ── 추천/최근 검색어 ── */
 .suggest-area { padding: 20px 16px; }
+.suggest-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 10px;
+}
 .suggest-label {
   font-size: 12px;
   font-weight: 700;
   color: #3D3B55;
   letter-spacing: 0.3px;
-  margin: 0 0 10px;
+  margin: 0;
   text-transform: uppercase;
+}
+.recent-clear-all {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  color: #55516E;
+  cursor: pointer;
 }
 .suggest-chips {
   display: flex;
@@ -398,16 +455,20 @@ onMounted(() => {
     border-color: rgba(167,139,250,0.25);
   }
 }
-.result-emoji {
-  font-size: 30px;
+.result-icon {
   width: 48px;
   height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #242238;
   border-radius: 12px;
   flex-shrink: 0;
+}
+.result-icon-dream {
+  background: #1E1B35;
+}
+.result-icon-ai {
+  background: #111D35;
 }
 .result-body { flex: 1; min-width: 0; }
 .result-title-row {
