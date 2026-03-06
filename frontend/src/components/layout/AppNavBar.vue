@@ -48,12 +48,24 @@ const IconSearch = defineComponent({
   }
 })
 
-const IconBell = defineComponent({
+// 상징: 눈 안에 별 — 꿈 속 의미를 꿰뚫어 보는 통찰
+const IconSymbol = defineComponent({
   props: { active: Boolean },
   setup(props) {
-    return () => h('svg', { width: 24, height: 24, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, [
-      h('path', { d: 'M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9', fill: props.active ? 'currentColor' : 'none' }),
-      h('path', { d: 'M13.73 21a2 2 0 0 1-3.46 0' })
+    return () => h('svg', { width: 24, height: 24, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, [
+      // 눈 외곽
+      h('path', { d: 'M1 12C3.5 6 7.5 3 12 3s8.5 3 11 9c-2.5 6-6.5 9-11 9S3.5 18 1 12z',
+        fill: props.active ? 'rgba(167,139,250,0.15)' : 'none' }),
+      // 홍채
+      h('circle', { cx: 12, cy: 12, r: 3.5,
+        fill: props.active ? 'currentColor' : 'none',
+        stroke: 'currentColor', 'stroke-width': 1.8 }),
+      // 별 빛 (상단)
+      h('line', { x1: 12, y1: 1, x2: 12, y2: 3, 'stroke-width': 1.5 }),
+      // 별 빛 (좌상)
+      h('line', { x1: 5.5, y1: 3.5, x2: 7, y2: 5, 'stroke-width': 1.5 }),
+      // 별 빛 (우상)
+      h('line', { x1: 18.5, y1: 3.5, x2: 17, y2: 5, 'stroke-width': 1.5 }),
     ])
   }
 })
@@ -68,11 +80,12 @@ const IconUser = defineComponent({
   }
 })
 
+// TODO: 로그인 기능 구현 후 마이페이지 재활성화
+// { name: 'my', label: '마이페이지', to: '/my', icon: IconUser },
 const navItems = [
-  { name: 'home',   label: '홈',       to: '/',        icon: IconHome },
-  { name: 'search', label: '검색',     to: '/search',  icon: IconSearch },
-  { name: 'notify', label: '알림',     to: '/notify',  icon: IconBell,  badge: null },
-  { name: 'my',     label: '마이페이지', to: '/my',    icon: IconUser }
+  { name: 'home',   label: '홈',   to: '/',       icon: IconHome },
+  { name: 'search', label: '검색', to: '/search', icon: IconSearch },
+  { name: 'symbol', label: '상징', to: '/symbol', icon: IconSymbol },
 ]
 </script>
 
