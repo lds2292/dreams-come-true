@@ -57,8 +57,8 @@ const search = async (req, res) => {
     }
 
     // 최고 유사도 75% 미만 → AI 결과를 최상단에 추가
-    if (maxScore < 0.75) {
-      console.log(`[AI 보강 시작] 최고 유사도 ${(maxScore * 100).toFixed(1)}% < 75%, q="${keyword}"`);
+    if (maxScore < 0.69) {
+      console.log(`[AI 보강 시작] 최고 유사도 ${(maxScore * 100).toFixed(1)}% < 69%, q="${keyword}"`);
       const aiStart = Date.now();
       const aiResult = await interpretDream(keyword);
       console.log(`[AI 보강 완료] ${Date.now() - aiStart}ms`);
