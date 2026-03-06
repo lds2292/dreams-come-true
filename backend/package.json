@@ -6,7 +6,16 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "seed:pinecone": "node scripts/seed-pinecone.js"
+    "seed:pinecone": "node scripts/seed-pinecone.js",
+    "seed:person": "node scripts/seed-dreams.js PERSON",
+    "seed:animal": "node scripts/seed-dreams.js ANIMAL",
+    "seed:act": "node scripts/seed-dreams.js ACT",
+    "seed:goods": "node scripts/seed-dreams.js GOODS",
+    "seed:death": "node scripts/seed-dreams.js DEATH",
+    "seed:nature": "node scripts/seed-dreams.js NATURE",
+    "pinecone:delete-all": "node scripts/delete-all-indexes.js",
+    "rebuild:keywords": "node scripts/rebuild-keywords.js",
+    "rebuild:embed-text": "node scripts/rebuild-embed-text.js"
   },
   "dependencies": {
     "@pinecone-database/pinecone": "^7.1.0",
