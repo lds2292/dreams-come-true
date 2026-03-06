@@ -30,7 +30,7 @@ const search = async (req, res) => {
       id: match.id,
       title: match.metadata.dream,
       dream_no: match.metadata.dream_no,
-      category: match.metadata.category,
+      category: (Array.isArray(match.metadata.category) ? match.metadata.category[0] : match.metadata.category || '').replace(/"/g, '').trim(),
       basic: match.metadata.basic,
       baby: match.metadata.baby,
       random: match.metadata.random,
@@ -39,23 +39,38 @@ const search = async (req, res) => {
       score: match.score,
     }));
 
-    if (results.length > 0) {
-      console.log(`[검색 완료] 총 ${Date.now() - startAt}ms`);
-      return res.json({ results, total: results.length });
+    const maxScore = results.length > 0 ? results[0].score : 0;
+
+    // 결과 없음 → AI 단독 폴백
+    if (results.length === 0) {
+      console.log(`[AI 폴백 시작] q="${keyword}"`);
+      const aiStart = Date.now();
+      const aiResult = await interpretDream(keyword);
+      console.log(`[AI 폴백 완료] ${Date.now() - aiStart}ms`);
+
+      if (!aiResult) {
+        console.log(`[무관 검색어] q="${keyword}" — 꿈 해몽 불가 판정, 총 ${Date.now() - startAt}ms`);
+        return res.json({ results: [], total: 0 });
+      }
+
+      return res.json({ results: [aiResult], total: 1, ai_generated: true });
     }
 
-    // 결과 없음 → AI 폴백
-    console.log(`[AI 폴백 시작] q="${keyword}"`);
-    const aiStart = Date.now();
-    const aiResult = await interpretDream(keyword);
-    console.log(`[AI 폴백 완료] ${Date.now() - aiStart}ms`);
+    // 최고 유사도 75% 미만 → AI 결과를 최상단에 추가
+    if (maxScore < 0.75) {
+      console.log(`[AI 보강 시작] 최고 유사도 ${(maxScore * 100).toFixed(1)}% < 75%, q="${keyword}"`);
+      const aiStart = Date.now();
+      const aiResult = await interpretDream(keyword);
+      console.log(`[AI 보강 완료] ${Date.now() - aiStart}ms`);
 
-    if (!aiResult) {
-      console.log(`[무관 검색어] q="${keyword}" — 꿈 해몽 불가 판정, 총 ${Date.now() - startAt}ms`);
-      return res.json({ results: [], total: 0 });
+      if (aiResult) {
+        console.log(`[검색 완료 + AI 보강] 총 ${Date.now() - startAt}ms`);
+        return res.json({ results: [aiResult, ...results], total: results.length + 1 });
+      }
     }
 
-    res.json({ results: [aiResult], total: 1, ai_generated: true });
+    console.log(`[검색 완료] 총 ${Date.now() - startAt}ms`);
+    res.json({ results, total: results.length });
   } catch (err) {
     console.error(`[검색 오류] ${Date.now() - startAt}ms 경과, 원인: ${err.message}`);
     res.status(500).json({ message: '검색 중 오류가 발생했습니다.' });
