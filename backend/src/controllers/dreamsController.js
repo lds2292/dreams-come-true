@@ -1,4 +1,5 @@
 const { embedQuery, querySimilar } = require('../services/pinecone');
+const { applySymonyms } = require('../utils/synonymMap');
 
 const search = async (req, res) => {
   const { q, topK = 10 } = req.query;
@@ -8,12 +9,16 @@ const search = async (req, res) => {
   }
 
   const keyword = q.trim();
+  const normalized = applySymonyms(keyword);
   const startAt = Date.now();
-  console.log(`[검색 시작] q="${keyword}", topK=${topK}`);
+  if (normalized !== keyword) {
+    console.log(`[동의어 치환] "${keyword}" → "${normalized}"`);
+  }
+  console.log(`[검색 시작] q="${normalized}", topK=${topK}`);
 
   try {
     const embedStart = Date.now();
-    const vector = await embedQuery(keyword);
+    const vector = await embedQuery(normalized);
     console.log(`[임베딩 완료] ${Date.now() - embedStart}ms`);
 
     const queryStart = Date.now();
