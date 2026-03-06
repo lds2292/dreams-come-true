@@ -20,5 +20,8 @@ backend/.env
 .claude/
 .serena/
 
+# Playwright
+test-results/
+
 # Data files (sensitive / local only)
 data/
