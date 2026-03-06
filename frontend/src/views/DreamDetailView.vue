@@ -108,7 +108,7 @@ function starStyle(n) {
   display: flex;
   flex-direction: column;
   padding-bottom: 40px;
-  background: #faf9ff;
+  background: #111022;
   min-height: 100%;
 }
 
@@ -231,11 +231,11 @@ function starStyle(n) {
 }
 
 /* 섹션별 테마 */
-.section-basic   { background: #fff;    border: 1px solid #ede9fe; }
-.section-fortune { background: #fffbeb; border: 1px solid #fde68a; }
-.section-reality { background: #f0fdf4; border: 1px solid #bbf7d0; }
-.section-baby    { background: #fdf2f8; border: 1px solid #f9a8d4; }
-.section-random  { background: #f8fafc; border: 1px solid #e2e8f0; }
+.section-basic   { background: #1B1A2E; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid #7C3AED; }
+.section-fortune { background: #1B1A2E; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid #f59e0b; }
+.section-reality { background: #1B1A2E; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid #10b981; }
+.section-baby    { background: #1B1A2E; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid #ec4899; }
+.section-random  { background: #1B1A2E; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid #64748b; }
 
 .section-header {
   display: flex;
@@ -250,16 +250,16 @@ function starStyle(n) {
   margin: 0;
   letter-spacing: 0.2px;
 }
-.section-basic   .section-title { color: #5b21b6; }
-.section-fortune .section-title { color: #92400e; }
-.section-reality .section-title { color: #065f46; }
-.section-baby    .section-title { color: #9d174d; }
-.section-random  .section-title { color: #475569; }
+.section-basic   .section-title { color: #A78BFA; }
+.section-fortune .section-title { color: #fbbf24; }
+.section-reality .section-title { color: #34d399; }
+.section-baby    .section-title { color: #f472b6; }
+.section-random  .section-title { color: #94a3b8; }
 
 .section-content {
   font-family: 'Noto Serif KR', serif;
   font-size: 14px;
-  color: #374151;
+  color: #C0BDD8;
   line-height: 1.9;
   margin: 0;
   white-space: pre-wrap;
@@ -275,7 +275,7 @@ function starStyle(n) {
   padding: 80px 20px;
 }
 .no-data-emoji { font-size: 48px; margin: 0; }
-.no-data-text  { font-size: 15px; color: #888; margin: 0; }
+.no-data-text  { font-size: 15px; color: #55516E; margin: 0; }
 .no-data-btn {
   margin-top: 8px;
   padding: 10px 24px;

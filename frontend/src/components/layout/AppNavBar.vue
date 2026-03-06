@@ -81,9 +81,8 @@ const navItems = [
   position: sticky;
   bottom: 0;
   z-index: 100;
-  background-color: #ffffff;
-  border-top: 1px solid #f0f0f0;
-  box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.06);
+  background-color: #111022;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   /* 홈바 safe area */
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -105,14 +104,14 @@ const navItems = [
   justify-content: center;
   gap: 3px;
   text-decoration: none;
-  color: #aaaaaa;
+  color: #55516E;
   transition: color 0.15s;
   -webkit-tap-highlight-color: transparent;
   cursor: pointer;
 }
 
 .nav-item.active {
-  color: #5b21b6;
+  color: #A78BFA;
 }
 
 .nav-item:active {

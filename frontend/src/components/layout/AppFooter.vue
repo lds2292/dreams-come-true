@@ -29,8 +29,8 @@
 
 <style scoped>
 .app-footer {
-  background-color: #f8f8f8;
-  border-top: 1px solid #ebebeb;
+  background-color: #0D0C1A;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .footer-inner {
@@ -50,7 +50,7 @@
 .company-name {
   font-size: 13px;
   font-weight: 700;
-  color: #333;
+  color: #6B6888;
 }
 
 .footer-links {
@@ -62,7 +62,7 @@
 
 .footer-link {
   font-size: 12px;
-  color: #555;
+  color: #5A5872;
   text-decoration: none;
 }
 
@@ -72,7 +72,7 @@
 
 .divider {
   font-size: 11px;
-  color: #ccc;
+  color: #2E2C42;
 }
 
 .footer-info {
@@ -84,13 +84,13 @@
 .footer-info p {
   margin: 0;
   font-size: 11px;
-  color: #888;
+  color: #3D3B55;
   line-height: 1.6;
 }
 
 .footer-copyright {
   margin: 4px 0 0;
   font-size: 11px;
-  color: #aaa;
+  color: #2E2C42;
 }
 </style>

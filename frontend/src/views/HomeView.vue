@@ -471,12 +471,12 @@ const zodiacList = [
 .section-title {
   font-size: 16px;
   font-weight: 700;
-  color: #111;
+  color: #F2F0FF;
   margin: 0;
 }
 .section-more {
   font-size: 12px;
-  color: #7c3aed;
+  color: #A78BFA;
   text-decoration: none;
 }
 
@@ -492,25 +492,25 @@ const zodiacList = [
   align-items: center;
   gap: 8px;
   padding: 18px 8px;
-  background: #fff;
-  border: 1px solid #ede9fe;
+  background: #1B1A2E;
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 16px;
   cursor: pointer;
-  box-shadow: 0 2px 12px rgba(91,33,182,0.07), 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 .category-btn:active {
   transform: scale(0.95);
-  box-shadow: 0 1px 6px rgba(91,33,182,0.05);
-  border-color: #c4b5fd;
-  background: #faf5ff;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+  border-color: rgba(167,139,250,0.4);
+  background: #221F3A;
 }
 @media (hover: hover) {
   .category-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(91,33,182,0.13), 0 2px 6px rgba(0,0,0,0.07);
-    border-color: #c4b5fd;
+    box-shadow: 0 6px 24px rgba(124,58,237,0.2);
+    border-color: rgba(167,139,250,0.35);
   }
 }
 .category-icon {
@@ -522,7 +522,7 @@ const zodiacList = [
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 12px;
   font-weight: 700;
-  color: #3b0764;
+  color: #C4B5FD;
   letter-spacing: -0.2px;
   white-space: nowrap;
 }
@@ -702,15 +702,15 @@ const zodiacList = [
 }
 .zodiac-card {
   position: relative;
-  background: #fff;
-  border: 1px solid #f0f0f0;
+  background: #1B1A2E;
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 14px;
   padding: 14px 8px 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  box-shadow: 0 4px 16px rgba(91,33,182,0.08), 0 1px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
   text-align: center;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   -webkit-tap-highlight-color: transparent;
@@ -718,17 +718,18 @@ const zodiacList = [
 }
 .zodiac-card:active {
   transform: scale(0.97);
-  box-shadow: 0 2px 8px rgba(91,33,182,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 @media (hover: hover) {
   .zodiac-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(91,33,182,0.14), 0 2px 6px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 24px rgba(124,58,237,0.2);
+    border-color: rgba(167,139,250,0.3);
   }
 }
 .zodiac-best {
-  border-color: #c4b5fd;
-  background: linear-gradient(160deg, #faf5ff, #fff);
+  border-color: rgba(167,139,250,0.35);
+  background: linear-gradient(160deg, #221F3A, #1B1A2E);
 }
 .zodiac-rank {
   position: absolute;
@@ -736,8 +737,8 @@ const zodiacList = [
   left: 8px;
   font-size: 9px;
   font-weight: 700;
-  color: #7c3aed;
-  background: #ede9fe;
+  color: #C4B5FD;
+  background: rgba(124,58,237,0.25);
   padding: 1px 5px;
   border-radius: 8px;
 }
@@ -747,18 +748,18 @@ const zodiacList = [
 .zodiac-animal {
   font-size: 13px;
   font-weight: 700;
-  color: #111;
+  color: #F2F0FF;
   margin: 0;
 }
 .zodiac-years {
   font-size: 9px;
-  color: #999;
+  color: #55516E;
   margin: 0;
   letter-spacing: -0.3px;
 }
 .zodiac-luck {
   font-size: 10px;
-  color: #555;
+  color: #8882A8;
   margin: 2px 0 0;
   line-height: 1.4;
 }
@@ -767,5 +768,5 @@ const zodiacList = [
   letter-spacing: 1px;
 }
 .star-on  { color: #f59e0b; }
-.star-off { color: #e5e7eb; }
+.star-off { color: #2E2C42; }
 </style>

@@ -17,10 +17,8 @@
           <span v-if="hasNotification" class="notification-dot"></span>
         </button>
 
-        <!-- 비로그인 상태: 로그인 버튼 -->
-        <button v-else class="login-btn" @click="$router.push('/login')">
-          로그인
-        </button>
+        <!-- TODO: 로그인 기능 미제공 — 재활성화 시 아래 주석 해제 -->
+        <!-- <button v-else class="login-btn" @click="$router.push('/login')">로그인</button> -->
       </div>
     </div>
   </header>
@@ -44,9 +42,8 @@ defineProps({
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: #ffffff;
-  border-bottom: 1px solid #f0f0f0;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  background-color: #111022;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .header-inner {
@@ -67,7 +64,7 @@ defineProps({
   font-family: 'Noto Serif KR', serif;
   font-size: 17px;
   font-weight: 700;
-  color: #3b0764;
+  color: #C4B5FD;
   letter-spacing: -0.3px;
 }
 
@@ -88,10 +85,10 @@ defineProps({
   background: transparent;
   border-radius: 50%;
   cursor: pointer;
-  color: #333;
+  color: #A0A0C8;
   transition: background-color 0.15s;
 }
-.icon-btn:active { background-color: #f5f5f5; }
+.icon-btn:active { background-color: rgba(255, 255, 255, 0.08); }
 
 .notification-dot {
   position: absolute;
@@ -101,7 +98,7 @@ defineProps({
   height: 7px;
   background-color: #ff4444;
   border-radius: 50%;
-  border: 1.5px solid #fff;
+  border: 1.5px solid #111022;
 }
 
 .login-btn {

@@ -41,7 +41,7 @@ watch(() => route.path, async () => {
   height: 100dvh;
   max-width: 600px;
   margin: 0 auto;
-  background-color: #ffffff;
+  background-color: #111022;
 }
 
 .layout-content {
