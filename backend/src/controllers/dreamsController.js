@@ -1,5 +1,6 @@
 const { embedQuery, querySimilar } = require('../services/pinecone');
 const { applySymonyms } = require('../utils/synonymMap');
+const { interpretDream } = require('../services/aiDream');
 
 const search = async (req, res) => {
   const { q, topK = 10 } = req.query;
@@ -25,7 +26,7 @@ const search = async (req, res) => {
     const matches = await querySimilar(vector, Number(topK));
     console.log(`[Pinecone 조회 완료] ${matches.length}건, ${Date.now() - queryStart}ms`);
 
-    const results = matches.filter((match) => match.score >= 0.5).map((match) => ({
+    const results = matches.filter((match) => match.score >= 0.55).map((match) => ({
       id: match.id,
       title: match.metadata.dream,
       dream_no: match.metadata.dream_no,
@@ -38,8 +39,18 @@ const search = async (req, res) => {
       score: match.score,
     }));
 
-    console.log(`[검색 완료] 총 ${Date.now() - startAt}ms`);
-    res.json({ results, total: results.length });
+    if (results.length > 0) {
+      console.log(`[검색 완료] 총 ${Date.now() - startAt}ms`);
+      return res.json({ results, total: results.length });
+    }
+
+    // 결과 없음 → AI 폴백
+    console.log(`[AI 폴백 시작] q="${keyword}"`);
+    const aiStart = Date.now();
+    const aiResult = await interpretDream(keyword);
+    console.log(`[AI 폴백 완료] ${Date.now() - aiStart}ms`);
+
+    res.json({ results: [aiResult], total: 1, ai_generated: true });
   } catch (err) {
     console.error(`[검색 오류] ${Date.now() - startAt}ms 경과, 원인: ${err.message}`);
     res.status(500).json({ message: '검색 중 오류가 발생했습니다.' });

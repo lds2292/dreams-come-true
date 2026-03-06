@@ -75,13 +75,13 @@
           <span class="count-badge">{{ results.length }}건</span>
         </p>
         <div class="result-list">
-          <div v-for="item in results" :key="item.id" class="result-card" @click="goToDetail(item)">
+          <div v-for="item in results" :key="item.id" :class="['result-card', { 'result-card-ai': item.aiGenerated }]" @click="goToDetail(item)">
             <div class="result-emoji">{{ item.emoji }}</div>
             <div class="result-body">
               <div class="result-title-row">
                 <p class="result-title" v-html="highlight(item.title)"></p>
                 <div class="result-badges">
-                  <span class="score-badge">{{ (item.score * 100).toFixed(1) }}%</span>
+                  <span v-if="isDebug && !item.aiGenerated" class="score-badge">{{ (item.score * 100).toFixed(1) }}%</span>
                   <span :class="['tag', item.tagType]">{{ item.tag }}</span>
                 </div>
               </div>
@@ -114,13 +114,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../api/index.js'
 import { useDreamStore } from '../stores/dream.js'
 import { useSearchStore } from '../stores/search.js'
 
 const route       = useRoute()
+const isDebug     = computed(() => route.query.debug === '1')
 const router      = useRouter()
 const dreamStore  = useDreamStore()
 const searchStore = useSearchStore()
@@ -154,11 +155,12 @@ function toCard(d) {
     id: d.id,
     emoji: '✨',
     title: d.title,
-    tag: '꿈해몽',
+    tag: d.ai_generated ? 'AI해몽' : '꿈해몽',
     tagType: 'tag-emotion',
     summary: basic.length > 60 ? basic.slice(0, 60) + '…' : basic,
     detail: basic,
     score: d.score ?? 0,
+    aiGenerated: d.ai_generated ?? false,
     dreamTypes,
     // 상세 페이지용 원본 필드
     basic: d.basic,
@@ -201,7 +203,7 @@ async function doSearch() {
   submitted.value = true
   loading.value = true
   saveRecent(q)
-  router.replace({ path: '/search', query: { q } })
+  router.replace({ path: '/search', query: { q, ...(isDebug.value ? { debug: '1' } : {}) } })
 
   try {
     const data = await api.get('/dreams/search', { params: { q } })
@@ -255,37 +257,37 @@ onMounted(() => {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: #fff;
+  background: #111022;
   padding: 12px 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 .search-box {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #f5f5f7;
-  border: 1.5px solid transparent;
+  background: #1B1A2E;
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   padding: 0 14px;
   height: 48px;
   transition: border-color 0.2s, background 0.2s;
 }
 .search-box.focused {
-  background: #fff;
+  background: #221F3A;
   border-color: #7c3aed;
 }
-.search-icon { color: #999; flex-shrink: 0; }
+.search-icon { color: #55516E; flex-shrink: 0; }
 .search-input {
   flex: 1;
   background: transparent;
   border: none;
   outline: none;
   font-size: 15px;
-  color: #111;
-  caret-color: #7c3aed;
+  color: #F2F0FF;
+  caret-color: #A78BFA;
   min-width: 0;
 }
-.search-input::placeholder { color: #aaa; }
+.search-input::placeholder { color: #3D3B55; }
 .search-input::-webkit-search-decoration,
 .search-input::-webkit-search-cancel-button { -webkit-appearance: none; }
 .clear-btn {
@@ -295,10 +297,10 @@ onMounted(() => {
   width: 22px;
   height: 22px;
   border: none;
-  background: #ddd;
+  background: #2E2C42;
   border-radius: 50%;
   cursor: pointer;
-  color: #555;
+  color: #8882A8;
   flex-shrink: 0;
   padding: 0;
 }
@@ -308,7 +310,7 @@ onMounted(() => {
 .suggest-label {
   font-size: 12px;
   font-weight: 700;
-  color: #999;
+  color: #3D3B55;
   letter-spacing: 0.3px;
   margin: 0 0 10px;
   text-transform: uppercase;
@@ -320,15 +322,15 @@ onMounted(() => {
 }
 .chip {
   padding: 6px 14px;
-  background: #f5f3ff;
-  color: #5b21b6;
-  border: 1px solid #ddd6fe;
+  background: rgba(124,58,237,0.15);
+  color: #A78BFA;
+  border: 1px solid rgba(124,58,237,0.25);
   border-radius: 20px;
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
 }
-.chip:active { background: #ede9fe; }
+.chip:active { background: rgba(124,58,237,0.25); }
 .recent-list {
   display: flex;
   flex-direction: column;
@@ -338,7 +340,7 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 10px 0;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 .recent-text {
   display: flex;
@@ -347,36 +349,36 @@ onMounted(() => {
   background: none;
   border: none;
   font-size: 14px;
-  color: #333;
+  color: #A0A0C8;
   cursor: pointer;
   padding: 0;
 }
-.recent-text svg { color: #bbb; }
+.recent-text svg { color: #3D3B55; }
 .recent-del {
   background: none;
   border: none;
-  color: #bbb;
+  color: #3D3B55;
   cursor: pointer;
   padding: 4px;
   display: flex;
   align-items: center;
 }
-.no-recent { font-size: 13px; color: #bbb; margin: 8px 0 0; }
+.no-recent { font-size: 13px; color: #3D3B55; margin: 8px 0 0; }
 
 /* ── 결과 영역 ── */
 .result-area { padding: 0 16px 24px; }
 .result-count {
   font-size: 13px;
-  color: #666;
+  color: #55516E;
   margin: 16px 0 14px;
   display: flex;
   align-items: center;
   gap: 6px;
 }
-.result-count strong { color: #111; }
+.result-count strong { color: #F2F0FF; }
 .count-badge {
-  background: #ede9fe;
-  color: #5b21b6;
+  background: rgba(124,58,237,0.2);
+  color: #A78BFA;
   font-size: 11px;
   font-weight: 700;
   padding: 2px 7px;
@@ -386,23 +388,24 @@ onMounted(() => {
 .result-card {
   display: flex;
   gap: 14px;
-  background: #fff;
-  border: 1px solid #f0f0f0;
+  background: #1B1A2E;
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 16px;
   padding: 16px;
-  box-shadow: 0 4px 20px rgba(91,33,182,0.08), 0 1px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   -webkit-tap-highlight-color: transparent;
   cursor: pointer;
 }
 .result-card:active {
   transform: scale(0.97);
-  box-shadow: 0 2px 10px rgba(91,33,182,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 @media (hover: hover) {
   .result-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(91,33,182,0.14), 0 2px 6px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 28px rgba(124,58,237,0.2);
+    border-color: rgba(167,139,250,0.25);
   }
 }
 .result-emoji {
@@ -412,7 +415,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f3ff;
+  background: #242238;
   border-radius: 12px;
   flex-shrink: 0;
 }
@@ -435,19 +438,33 @@ onMounted(() => {
   font-weight: 700;
   padding: 3px 7px;
   border-radius: 20px;
-  background: #f0fdf4;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
+  background: rgba(16,185,129,0.15);
+  color: #34d399;
+  border: 1px solid rgba(16,185,129,0.25);
+}
+.ai-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 7px;
+  border-radius: 20px;
+  background: rgba(124,58,237,0.25);
+  color: #C4B5FD;
+  border: 1px solid rgba(167,139,250,0.35);
+  letter-spacing: 0.3px;
+}
+.result-card-ai {
+  border-color: rgba(124,58,237,0.25);
+  background: linear-gradient(135deg, #1B1A2E 0%, #1E1A35 100%);
 }
 .result-title {
   font-size: 15px;
   font-weight: 700;
-  color: #111;
+  color: #F2F0FF;
   margin: 0;
 }
 .result-title :deep(mark) {
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba(245,158,11,0.2);
+  color: #fbbf24;
   border-radius: 2px;
   padding: 0 1px;
 }
@@ -463,20 +480,20 @@ onMounted(() => {
   padding: 2px 8px;
   border-radius: 20px;
 }
-.dt-예지몽 { background: #fef9c3; color: #854d0e; }
-.dt-현실몽 { background: #dbeafe; color: #1e40af; }
-.dt-태몽   { background: #fce7f3; color: #9d174d; }
-.dt-잡몽   { background: #f1f5f9; color: #475569; }
+.dt-예지몽 { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.dt-현실몽 { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.dt-태몽   { background: rgba(236,72,153,0.15); color: #f472b6; }
+.dt-잡몽   { background: rgba(100,116,139,0.15); color: #94a3b8; }
 
 .result-summary {
   font-size: 13px;
-  color: #555;
+  color: #8882A8;
   margin: 0 0 6px;
   line-height: 1.5;
 }
 .result-detail {
   font-size: 12px;
-  color: #888;
+  color: #55516E;
   line-height: 1.6;
   margin: 0;
   overflow: hidden;
@@ -492,12 +509,12 @@ onMounted(() => {
   border-radius: 20px;
   flex-shrink: 0;
 }
-.tag-money    { background: #fef3c7; color: #b45309; }
-.tag-good     { background: #d1fae5; color: #065f46; }
-.tag-emotion  { background: #ede9fe; color: #5b21b6; }
-.tag-family   { background: #fee2e2; color: #991b1b; }
-.tag-new      { background: #dbeafe; color: #1d4ed8; }
-.tag-relation { background: #fce7f3; color: #9d174d; }
+.tag-money    { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.tag-good     { background: rgba(16,185,129,0.15); color: #34d399; }
+.tag-emotion  { background: rgba(124,58,237,0.2);  color: #A78BFA; }
+.tag-family   { background: rgba(239,68,68,0.15);  color: #f87171; }
+.tag-new      { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.tag-relation { background: rgba(236,72,153,0.15); color: #f472b6; }
 
 /* ── 로딩 ── */
 .loading-wrap {
@@ -510,13 +527,13 @@ onMounted(() => {
 .spinner {
   width: 36px;
   height: 36px;
-  border: 3px solid #ede9fe;
+  border: 3px solid rgba(124,58,237,0.2);
   border-top-color: #7c3aed;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { font-size: 14px; color: #888; margin: 0; }
+.loading-text { font-size: 14px; color: #55516E; margin: 0; }
 
 /* ── 빈 결과 ── */
 .empty-wrap {
@@ -527,6 +544,6 @@ onMounted(() => {
   padding: 60px 20px 40px;
 }
 .empty-emoji { font-size: 48px; margin: 0 0 16px; }
-.empty-title { font-size: 17px; font-weight: 700; color: #111; margin: 0 0 8px; }
-.empty-desc  { font-size: 13px; color: #777; line-height: 1.7; margin: 0; }
+.empty-title { font-size: 17px; font-weight: 700; color: #F2F0FF; margin: 0 0 8px; }
+.empty-desc  { font-size: 13px; color: #55516E; line-height: 1.7; margin: 0; }
 </style>
