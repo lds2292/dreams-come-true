@@ -541,6 +541,10 @@ onMounted(() => {
   border-radius: 12px;
   flex-shrink: 0;
 }
+.result-icon svg {
+  width: 28px;
+  height: 28px;
+}
 .result-icon-dream {
   background: #1E1B35;
 }
