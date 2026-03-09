@@ -11,6 +11,7 @@ jobs:
   deploy-frontend:
     name: Deploy Frontend (S3 + CloudFront)
     runs-on: ubuntu-latest
+    environment: deploy
     steps:
       - uses: actions/checkout@v4
 
