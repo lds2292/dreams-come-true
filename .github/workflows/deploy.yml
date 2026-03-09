@@ -67,6 +67,16 @@ jobs:
             set -e
             cd /home/ec2-user/app
             git pull origin main
+            # SSM → .env 재생성
+            aws ssm get-parameters-by-path \
+              --path /dreamcomtrue/prod/ \
+              --with-decryption \
+              --region ap-northeast-2 \
+              --query "Parameters[*].[Name,Value]" \
+              --output text | while read name value; do
+                key=$(basename "$name")
+                echo "${key}=${value}"
+              done > backend/.env
             cd backend
             npm ci --omit=dev
             pm2 restart dreamcomtrue-api || pm2 start ecosystem.config.js
