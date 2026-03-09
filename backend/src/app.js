@@ -4,7 +4,14 @@ const routes = require('./routes');
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? (process.env.CORS_ORIGIN || '').split(',').map(o => o.trim()).filter(Boolean)
+  : true; // 개발 환경: 전체 허용
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
 app.use(express.json());
 
 app.use('/api', routes);
