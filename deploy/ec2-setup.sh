@@ -11,7 +11,7 @@ sudo npm install -g pm2
 # ── 2. 앱 디렉토리 + 레포 클론 ────────────────────────────
 mkdir -p /home/ec2-user/app
 cd /home/ec2-user/app
-git clone https://github.com/<YOUR_ORG>/dreamcomtrue.git .
+git clone https://github.com/lds2292/dreams-come-true.git .
 
 # ── 3. 백엔드 의존성 설치 ────────────────────────────────
 cd backend
@@ -40,7 +40,7 @@ pm2 save
 sudo tee /etc/nginx/conf.d/dreamcomtrue.conf > /dev/null <<'NGINX'
 server {
     listen 80;
-    server_name api.yourdomain.com;
+    server_name _;
 
     location / {
         proxy_pass http://localhost:8080;
@@ -60,4 +60,4 @@ sudo systemctl restart nginx
 # DNS 설정 완료 후 실행
 # sudo certbot --nginx -d api.yourdomain.com
 
-echo "✅ EC2 setup complete. Update api.yourdomain.com in Nginx config & run certbot for SSL."
+echo "✅ EC2 setup complete. Run certbot for SSL when domain is configured."

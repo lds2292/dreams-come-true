@@ -21,6 +21,6 @@ put PINECONE_API_KEY  "pc-xxxxxxxxxxxxxxxxxxxx"
 put PINECONE_HOST     "https://dream-dictionary-xxxx.svc.pinecone.io"
 put OPENAI_API_KEY    "sk-xxxxxxxxxxxxxxxxxxxx"
 # put JWT_SECRET        "change-me-to-a-long-random-string"  # 로그인 기능 구현 시 활성화
-put CORS_ORIGIN       "https://yourdomain.com,https://www.yourdomain.com"
+put CORS_ORIGIN       "https://d1fjqnba5t46kv.cloudfront.net"
 
 echo "✅ All parameters stored in SSM at ${PATH_PREFIX}/"
