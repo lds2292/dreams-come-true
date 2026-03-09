@@ -10,6 +10,7 @@ jobs:
   # ──────────────────────────────────────────────
   deploy-frontend:
     name: Deploy Frontend (S3 + CloudFront)
+    needs: deploy-backend
     runs-on: ubuntu-latest
     environment: deploy
     steps:
@@ -50,23 +51,23 @@ jobs:
 
   # ──────────────────────────────────────────────
   # 백엔드: EC2 SSH pull & PM2 재시작
-  # TODO: 백엔드 EC2 배포 준비 완료 후 주석 해제
   # ──────────────────────────────────────────────
-  # deploy-backend:
-  #   name: Deploy Backend (EC2)
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Deploy via SSH
-  #       uses: appleboy/ssh-action@v1
-  #       with:
-  #         host: ${{ secrets.EC2_HOST }}
-  #         username: ec2-user
-  #         key: ${{ secrets.EC2_SSH_KEY }}
-  #         script: |
-  #           set -e
-  #           cd /home/ec2-user/app
-  #           git pull origin main
-  #           cd backend
-  #           npm ci --omit=dev
-  #           pm2 restart dreamcomtrue-api || pm2 start ecosystem.config.js
-  #           pm2 save
+  deploy-backend:
+    name: Deploy Backend (EC2)
+    runs-on: ubuntu-latest
+    environment: deploy
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd /home/ec2-user/app
+            git pull origin main
+            cd backend
+            npm ci --omit=dev
+            pm2 restart dreamcomtrue-api || pm2 start ecosystem.config.js
+            pm2 save
