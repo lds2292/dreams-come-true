@@ -34,7 +34,7 @@
               v-model="searchQuery"
               type="search"
               class="search-input"
-              placeholder="꿈 내용을 입력해 보세요"
+              placeholder="꿈 내용을 입력해보세요. 예) 용이 하늘을 나는 꿈"
               enterkeyhint="search"
               @focus="searchFocused = true"
               @blur="searchFocused = false"

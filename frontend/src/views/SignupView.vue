@@ -12,7 +12,7 @@
     <div class="signup-hero">
       <div class="signup-logo">🌙</div>
       <h1 class="signup-title">회원가입</h1>
-      <p class="signup-sub">DreamsComeTrue와 함께 꿈을 이루어보세요</p>
+      <p class="signup-sub">꿈해몽 사전과 함께 꿈을 이루어보세요</p>
     </div>
 
     <!-- 단계 표시 -->

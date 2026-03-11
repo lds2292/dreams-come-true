@@ -1,8 +1,8 @@
 <template>
   <footer class="app-footer">
     <div class="footer-inner">
-      <span class="company-name">DreamsComeTrue Inc.</span>
-      <p class="footer-copyright">© 2026 DreamsComeTrue. All rights reserved.</p>
+      <span class="company-name">꿈해몽 사전</span>
+      <p class="footer-copyright">© 2026 꿈해몽 사전. All rights reserved.</p>
     </div>
   </footer>
 </template>

@@ -3,7 +3,7 @@
     <div class="header-inner">
       <!-- 왼쪽: 로고 -->
       <div class="header-logo" @click="$router.push('/')">
-        <span class="logo-text">DreamsComeTrue</span>
+        <span class="logo-text">꿈해몽 사전</span>
       </div>
 
       <!-- 오른쪽 -->

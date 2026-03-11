@@ -198,10 +198,11 @@ onActivated(() => {
     })
   } else {
     // 홈 등 다른 경로에서 진입 → 초기화 후 재호출
-    dreams.value    = []
-    page.value      = 1
-    total.value     = 0
-    error.value     = false
+    dreams.value      = []
+    subCategories.value = []
+    page.value        = 1
+    total.value       = 0
+    error.value       = false
     selectedSub.value = ''
     fetchSubCategories()
     fetchPage(1)

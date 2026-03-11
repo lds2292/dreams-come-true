@@ -11,7 +11,7 @@
     <!-- 로고 & 타이틀 -->
     <div class="login-hero">
       <div class="login-logo">🌙</div>
-      <h1 class="login-title">DreamsComeTrue</h1>
+      <h1 class="login-title">꿈해몽 사전</h1>
       <p class="login-sub">꿈과 운세의 모든 것</p>
     </div>
 
