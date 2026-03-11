@@ -26,3 +26,6 @@ tests/videos/
 
 # Data files (sensitive / local only)
 data/
+
+# Daily work logs (local only)
+dailywork/

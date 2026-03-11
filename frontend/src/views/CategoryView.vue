@@ -10,7 +10,17 @@
         </svg>
       </button>
       <div class="cat-title-wrap">
-        <h1 class="cat-title">{{ categoryName }}</h1>
+        <div class="breadcrumb">
+          <span
+            class="bc-item"
+            :class="selectedSubName ? 'bc-link' : 'bc-active'"
+            @click="selectedSubName ? selectSub('') : null"
+          >{{ categoryName }}</span>
+          <template v-if="selectedSubName">
+            <span class="bc-sep">›</span>
+            <span class="bc-item bc-active">{{ selectedSubName }}</span>
+          </template>
+        </div>
         <span class="cat-total">총 {{ total.toLocaleString() }}개</span>
       </div>
     </div>
@@ -122,8 +132,11 @@ const error        = ref(false)
 const subCategories = ref([])
 const selectedSub  = ref('')
 
-const hasMore   = computed(() => dreams.value.length < total.value)
-const remaining = computed(() => total.value - dreams.value.length)
+const hasMore        = computed(() => dreams.value.length < total.value)
+const remaining      = computed(() => total.value - dreams.value.length)
+const selectedSubName = computed(() =>
+  subCategories.value.find(s => s.slug === selectedSub.value)?.name ?? ''
+)
 
 async function fetchSubCategories() {
   try {
@@ -253,11 +266,30 @@ onMounted(() => {
   align-items: baseline;
   gap: 8px;
 }
-.cat-title {
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.bc-item {
   font-size: 18px;
   font-weight: 700;
-  color: #F2F0FF;
   margin: 0;
+}
+.bc-active {
+  color: #F2F0FF;
+}
+.bc-link {
+  color: #6B6888;
+  cursor: pointer;
+}
+.bc-link:active {
+  color: #A78BFA;
+}
+.bc-sep {
+  font-size: 16px;
+  color: #3D3B55;
+  line-height: 1;
 }
 .cat-total {
   font-size: 12px;
