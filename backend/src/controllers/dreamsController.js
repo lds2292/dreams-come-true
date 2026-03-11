@@ -1,6 +1,7 @@
 const { embedQuery, querySimilar } = require('../services/pinecone');
 const { applySymonyms } = require('../utils/synonymMap');
 const { interpretDream } = require('../services/aiDream');
+const supabase = require('../lib/supabase');
 
 const search = async (req, res) => {
   const { q, topK = 10 } = req.query;
@@ -26,18 +27,34 @@ const search = async (req, res) => {
     const matches = await querySimilar(vector, Number(topK));
     console.log(`[Pinecone 조회 완료] ${matches.length}건, ${Date.now() - queryStart}ms`);
 
-    const results = matches.filter((match) => match.score >= 0.55).map((match) => ({
-      id: match.id,
-      title: match.metadata.dream,
-      dream_no: match.metadata.dream_no,
-      category: (Array.isArray(match.metadata.category) ? match.metadata.category[0] : match.metadata.category || '').replace(/"/g, '').trim(),
-      basic: match.metadata.basic,
-      baby: match.metadata.baby,
-      random: match.metadata.random,
-      reality: match.metadata.reality,
-      fortune_telling: match.metadata.fortune_telling,
-      score: match.score,
-    }));
+    const filtered = matches.filter((match) => match.score >= 0.55);
+
+    // Pinecone id(dream_no) → Supabase 상세 데이터 조회
+    const pineconeIds = filtered.map((m) => m.id);
+    const scoreMap = Object.fromEntries(filtered.map((m) => [m.id, m.score]));
+
+    const { data: dreamRows, error: dbErr } = await supabase
+      .from('dream_vectors')
+      .select('pinecone_id, dreams(id, title, basic, baby, random, reality, fortune_telling, category_id, sub_category_id, categories(name), sub_categories(name))')
+      .in('pinecone_id', pineconeIds);
+
+    if (dbErr) throw new Error(`Supabase 조회 오류: ${dbErr.message}`);
+
+    const results = (dreamRows ?? [])
+      .filter((row) => row.dreams)
+      .map((row) => ({
+        id: row.pinecone_id,
+        title: row.dreams.title,
+        category: row.dreams.categories?.name ?? '',
+        sub_category: row.dreams.sub_categories?.name ?? '',
+        basic: row.dreams.basic,
+        baby: row.dreams.baby,
+        random: row.dreams.random,
+        reality: row.dreams.reality,
+        fortune_telling: row.dreams.fortune_telling,
+        score: scoreMap[row.pinecone_id] ?? 0,
+      }))
+      .sort((a, b) => b.score - a.score);
 
     const maxScore = results.length > 0 ? results[0].score : 0;
 

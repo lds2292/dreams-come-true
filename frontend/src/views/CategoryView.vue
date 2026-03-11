@@ -15,6 +15,17 @@
       </div>
     </div>
 
+    <!-- 소분류 탭 -->
+    <div v-if="subCategories.length > 0" class="sub-tabs">
+      <button
+        v-for="sub in [{ slug: '', name: '전체' }, ...subCategories]"
+        :key="sub.slug"
+        class="sub-tab"
+        :class="{ active: selectedSub === sub.slug }"
+        @click="selectSub(sub.slug)"
+      >{{ sub.name }}</button>
+    </div>
+
     <!-- 로딩 -->
     <div v-if="loading && dreams.length === 0" class="skeleton-list">
       <div v-for="i in 5" :key="i" class="skeleton-card">
@@ -39,10 +50,16 @@
           @click="goToDetail(dream)"
         >
           <div class="dream-icon">
-            <IconDream />
+            <component :is="CATEGORY_SLUG_MAP[categorySlug] ?? IconDream" />
           </div>
           <div class="dream-body">
             <p class="dream-title">{{ dream.title }}</p>
+            <div class="dream-type-badges">
+              <span v-if="dream.fortune_telling" class="dt-badge dt-fortune">예지몽</span>
+              <span v-if="dream.reality"         class="dt-badge dt-reality">현실몽</span>
+              <span v-if="dream.baby"            class="dt-badge dt-baby">태몽</span>
+              <span v-if="dream.random"          class="dt-badge dt-random">잡몽</span>
+            </div>
             <p class="dream-summary">{{ dream.basic?.slice(0, 55) }}{{ dream.basic?.length > 55 ? '…' : '' }}</p>
           </div>
           <svg class="dream-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -74,22 +91,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onActivated, onDeactivated, nextTick, defineComponent, h, defineOptions } from 'vue'
+import { ref, computed, onMounted, onActivated, onDeactivated, nextTick, defineOptions } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../api/index.js'
 import { useDreamStore } from '../stores/dream.js'
-
-// ── 아이콘 ──────────────────────────────────────────
-const IconDream = defineComponent({
-  render() {
-    return h('svg', { viewBox: '0 0 24 24', fill: 'none', xmlns: 'http://www.w3.org/2000/svg', width: '24', height: '24' }, [
-      h('path', { d: 'M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z', fill: '#A78BFA' }),
-      h('circle', { cx: '18.5', cy: '4.5', r: '1.2', fill: '#C4B5FD' }),
-      h('circle', { cx: '15',   cy: '2.5', r: '0.8', fill: '#DDD6FE' }),
-      h('circle', { cx: '21',   cy: '8',   r: '0.7', fill: '#C4B5FD' }),
-    ])
-  }
-})
+import { IconDream, CATEGORY_SLUG_MAP } from '../components/icons/categoryIcons.js'
 
 defineOptions({ name: 'CategoryView' })
 
@@ -105,31 +111,52 @@ const router     = useRouter()
 const dreamStore = useDreamStore()
 
 const categoryName = computed(() => route.query.name || '')
-const LIMIT = 10
+const categorySlug = computed(() => route.query.slug || '')
+const LIMIT = 20
 
-const dreams  = ref([])
-const total   = ref(0)
-const page    = ref(1)
-const loading = ref(false)
-const error   = ref(false)
+const dreams       = ref([])
+const total        = ref(0)
+const page         = ref(1)
+const loading      = ref(false)
+const error        = ref(false)
+const subCategories = ref([])
+const selectedSub  = ref('')
 
 const hasMore   = computed(() => dreams.value.length < total.value)
 const remaining = computed(() => total.value - dreams.value.length)
 
+async function fetchSubCategories() {
+  try {
+    const data = await api.get('/categories')
+    const cat = data.categories.find(c => c.slug === categorySlug.value)
+    subCategories.value = cat?.sub_categories ?? []
+  } catch { /* 탭 없이 진행 */ }
+}
+
 async function fetchPage(pageNum) {
   loading.value = true
   try {
-    const data = await api.get('/dreams/category', {
-      params: { name: categoryName.value, page: pageNum, limit: LIMIT }
-    })
+    const params = { page: pageNum, limit: LIMIT }
+    if (selectedSub.value) params.sub = selectedSub.value
+    const data = await api.get(`/categories/${categorySlug.value}/dreams`, { params })
     total.value = data.total
-    dreams.value.push(...data.results)
+    dreams.value.push(...data.dreams)
     page.value = pageNum
   } catch {
     error.value = true
   } finally {
     loading.value = false
   }
+}
+
+function selectSub(slug) {
+  if (selectedSub.value === slug) return
+  selectedSub.value = slug
+  dreams.value = []
+  page.value = 1
+  total.value = 0
+  error.value = false
+  fetchPage(1)
 }
 
 function loadMore() {
@@ -171,20 +198,23 @@ onActivated(() => {
     })
   } else {
     // 홈 등 다른 경로에서 진입 → 초기화 후 재호출
-    dreams.value = []
-    page.value   = 1
-    total.value  = 0
-    error.value  = false
+    dreams.value    = []
+    page.value      = 1
+    total.value     = 0
+    error.value     = false
+    selectedSub.value = ''
+    fetchSubCategories()
     fetchPage(1)
   }
   fromDetail = false
 })
 
 onMounted(() => {
-  if (!categoryName.value) {
+  if (!categorySlug.value) {
     router.replace({ name: 'home' })
     return
   }
+  fetchSubCategories()
   fetchPage(1)
 })
 </script>
@@ -231,6 +261,36 @@ onMounted(() => {
 .cat-total {
   font-size: 12px;
   color: #55516E;
+}
+
+/* ── 소분류 탭 ── */
+.sub-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.sub-tabs::-webkit-scrollbar { display: none; }
+.sub-tab {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(167,139,250,0.2);
+  background: transparent;
+  color: #6B6888;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.sub-tab.active {
+  background: #5B21B6;
+  border-color: #5B21B6;
+  color: #fff;
 }
 
 /* ── 스켈레톤 ── */
@@ -319,6 +379,23 @@ onMounted(() => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.dream-type-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 0;
+}
+.dt-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+}
+.dt-fortune { background: rgba(245,158,11,0.15);  color: #fbbf24; }
+.dt-baby    { background: rgba(236,72,153,0.15);  color: #f472b6; }
+.dt-reality { background: rgba(59,130,246,0.15);  color: #60a5fa; }
+.dt-random  { background: rgba(100,116,139,0.15); color: #94a3b8; }
+
 .dream-summary {
   font-size: 12px;
   color: #6B6888;

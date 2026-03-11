@@ -77,7 +77,7 @@
           v-for="cat in dreamCategories"
           :key="cat.label"
           class="category-btn"
-          @click="onCategoryClick(cat.label)"
+          @click="onCategoryClick(cat)"
         >
           <component :is="cat.icon" class="category-icon" />
           <span class="category-label">{{ cat.label }}</span>
@@ -338,16 +338,16 @@ const todayLabel = computed(() => {
 
 // 꿈해몽 카테고리
 const dreamCategories = [
-  { icon: IconPerson, label: '사람/감정', count: 392 },
-  { icon: IconAnimal, label: '동물/식물', count: 731 },
-  { icon: IconAction, label: '행동',      count: 115 },
-  { icon: IconDeath,  label: '죽음/영혼', count:  67 },
-  { icon: IconNature, label: '자연현상',  count: 257 },
-  { icon: IconGoods,  label: '생활용품',  count: 510 },
+  { icon: IconPerson, label: '사람/감정', slug: 'people-emotion', count: 393 },
+  { icon: IconAnimal, label: '동물/식물', slug: 'animal-plant',   count: 727 },
+  { icon: IconAction, label: '행동',      slug: 'action',         count: 115 },
+  { icon: IconDeath,  label: '죽음/영혼', slug: 'death-spirit',   count:  67 },
+  { icon: IconNature, label: '자연현상',  slug: 'nature',         count: 257 },
+  { icon: IconGoods,  label: '생활용품',  slug: 'daily-goods',    count: 510 },
 ]
 
-function onCategoryClick(category) {
-  router.push({ name: 'category', query: { name: category } })
+function onCategoryClick(cat) {
+  router.push({ name: 'category', query: { slug: cat.slug, name: cat.label } })
 }
 
 // 인기 꿈해몽
