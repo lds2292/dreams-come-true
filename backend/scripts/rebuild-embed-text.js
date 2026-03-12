@@ -31,14 +31,15 @@ function buildEmbedText(item) {
   const { dream, keywords = [], category = [] } = item.metadata;
 
   const categoryText = Array.isArray(category) ? category.join('/') : category;
-  const keywordText = Array.isArray(keywords) ? keywords.join(' ') : keywords;
+  const keywordText  = Array.isArray(keywords) ? keywords.join(' ') : keywords;
 
+  // dream 중복 제거: "{category} {dream}. {keywords}"
   const parts = [];
   if (categoryText) parts.push(categoryText);
   parts.push(`${dream}.`);
-  parts.push(`${dream} ${keywordText}`.trim());
+  if (keywordText) parts.push(keywordText);
 
-  return parts.join(' ');
+  return parts.join(' ').trim();
 }
 
 function rebuild(filename) {
