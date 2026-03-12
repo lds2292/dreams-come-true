@@ -399,6 +399,10 @@ onMounted(() => {
   border-radius: 10px;
   flex-shrink: 0;
 }
+.dream-icon :deep(svg) {
+  width: 28px;
+  height: 28px;
+}
 .dream-body {
   flex: 1;
   min-width: 0;

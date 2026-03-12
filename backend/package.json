@@ -16,6 +16,9 @@
     "pinecone:delete-all": "node scripts/delete-all-indexes.js",
     "rebuild:keywords": "node scripts/rebuild-keywords.js",
     "rebuild:embed-text": "node scripts/rebuild-embed-text.js",
+    "rebuild:all": "node scripts/rebuild-all.js",
+    "rebuild:all:reset": "node scripts/rebuild-all.js --reset",
+    "sync:supabase": "node scripts/sync-supabase-summary.js",
     "export:pinecone": "node scripts/export-pinecone-to-json.js"
   },
   "dependencies": {
