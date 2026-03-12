@@ -1,0 +1,40 @@
+name: Deploy Backend Only
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: '배포 사유 (선택)'
+        required: false
+        default: '수동 백엔드 배포'
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend (EC2)
+    runs-on: ubuntu-latest
+    environment: deploy
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+            cd /home/ec2-user/app
+            git pull origin main
+            # SSM → .env 재생성
+            aws ssm get-parameters-by-path \
+              --path /dreamcomtrue/prod/ \
+              --with-decryption \
+              --region ap-northeast-2 \
+              --query "Parameters[*].[Name,Value]" \
+              --output text | while read name value; do
+                key=$(basename "$name")
+                echo "${key}=${value}"
+              done > backend/.env
+            cd backend
+            npm ci --omit=dev
+            pm2 restart dreamcomtrue-api || pm2 start ecosystem.config.js
+            pm2 save
