@@ -50,12 +50,14 @@ dreamcomtrue/                    ← git root
 │   │   │   ├── index.js          # 앱 공통 스토어 (로딩 상태)
 │   │   │   └── auth.js           # 인증 스토어 (로그인/로그아웃)
 │   │   └── views/
-│   │       ├── HomeView.vue      # 메인 홈 (꿈해몽/사주/운세 섹션)
-│   │       ├── SearchView.vue    # 검색 결과 페이지
-│   │       ├── NotifyView.vue    # 알림 페이지 (미구현)
-│   │       ├── MyView.vue        # 마이페이지 (로그인/비로그인 분기)
-│   │       ├── LoginView.vue     # 로그인 페이지 (독립 레이아웃)
-│   │       └── SignupView.vue    # 회원가입 페이지 (2단계 폼 UI 완성, API 미연동)
+│   │       ├── HomeView.vue              # 메인 홈 (꿈해몽/사주/운세 섹션)
+│   │       ├── SearchView.vue            # 검색 결과 페이지
+│   │       ├── NotifyView.vue            # 알림 페이지 (미구현)
+│   │       ├── MyView.vue                # 마이페이지 (로그인/비로그인 분기)
+│   │       ├── LoginView.vue             # 로그인 페이지 (독립 레이아웃)
+│   │       ├── SignupView.vue            # 회원가입 페이지 (2단계 폼 UI 완성, API 미연동)
+│   │       ├── BackofficeLoginView.vue   # 백오피스 로그인 (독립 레이아웃, /backstage)
+│   │       └── BackofficeDreamCreateView.vue  # 백오피스 꿈 등록 폼 (/backstage/dream/new)
 │   ├── index.html
 │   ├── package.json
 │   ├── vite.config.js
@@ -69,9 +71,16 @@ dreamcomtrue/                    ← git root
     │   ├── app.js                # Express 앱 설정 (미들웨어, 라우트)
     │   ├── routes/
     │   │   └── index.js          # 라우트 통합
-    │   ├── controllers/          # 요청 핸들러
+    │   ├── controllers/
+    │   │   ├── dreamsController.js       # 꿈 검색
+    │   │   ├── categoriesController.js   # 카테고리 트리
+    │   │   └── backofficeController.js   # 백오피스 로그인 + 꿈 등록
     │   ├── middleware/
-    │   │   └── auth.js           # JWT 인증 미들웨어
+    │   │   ├── auth.js                   # JWT 인증 미들웨어 (일반 사용자)
+    │   │   └── backofficeAuth.js         # JWT 인증 미들웨어 (백오피스 전용)
+    │   ├── utils/
+    │   │   ├── synonymMap.js             # 검색어 동의어 전처리
+    │   │   └── dreamUtils.js             # generateKeywords, buildEmbedText (공용)
     │   └── models/               # 데이터 모델
     ├── .env                      # 환경 변수 (PORT, JWT_SECRET)
     ├── .env.example
@@ -83,9 +92,11 @@ dreamcomtrue/                    ← git root
 ## 라우트 구조
 
 ```
-/login              → LoginView   (MainLayout 없음, 독립 전체화면)
-/signup             → SignupView  (MainLayout 없음, 독립 전체화면)
-/                   → MainLayout
+/login                   → LoginView              (MainLayout 없음, 독립 전체화면)
+/signup                  → SignupView             (MainLayout 없음, 독립 전체화면)
+/backstage               → BackofficeLoginView    (MainLayout 없음, 독립 전체화면)
+/backstage/dream/new     → BackofficeDreamCreateView  (backstageGuard 적용)
+/                        → MainLayout
   ├── /             → HomeView
   ├── /search       → SearchView  (?q=검색어 쿼리 파라미터)
   ├── /notify       → NotifyView
@@ -206,10 +217,28 @@ cd backend && npm run start   # 프로덕션 모드
 |------|------|--------|
 | `backend/.env` | `PORT` | `8080` |
 | `backend/.env` | `JWT_SECRET` | `changeme` |
+| `backend/.env` | `BACKOFFICE_USERNAME` | `admin` |
+| `backend/.env` | `BACKOFFICE_PASSWORD` | _(강력한 비밀번호 설정 필요)_ |
+| `backend/.env` | `BACKOFFICE_SECRET` | _(JWT 서명 시크릿)_ |
 
 ---
 
 ## 작업 로그
+
+### 2026-03-12
+- [x] 백오피스 꿈해몽 등록 기능 구현 (`/backstage`)
+  - **Backend:**
+    - `backend/src/utils/dreamUtils.js` (신규) — `generateKeywords()` + `buildEmbedText()` 공용 유틸
+    - `backend/src/middleware/backofficeAuth.js` (신규) — `BACKOFFICE_SECRET` JWT 검증
+    - `backend/src/controllers/backofficeController.js` (신규) — `login` + `createDream`
+      - createDream 흐름: GPT 키워드 생성 → embed_text 구성 → 임베딩 → dream_no 자동 채번 → Pinecone upsert → Supabase dreams/dream_vectors INSERT
+    - `backend/src/routes/backoffice.js` (신규) — `POST /api/backstage/login`, `POST /api/backstage/dreams`
+    - `backend/src/routes/index.js` — `/backstage` 라우트 등록
+    - `backend/.env` / `.env.example` — `BACKOFFICE_USERNAME`, `BACKOFFICE_PASSWORD`, `BACKOFFICE_SECRET` 추가
+  - **Frontend:**
+    - `frontend/src/views/BackofficeLoginView.vue` (신규) — 다크 로그인 폼, 토큰 `dct_backstage_token`으로 localStorage 저장
+    - `frontend/src/views/BackofficeDreamCreateView.vue` (신규) — 카테고리/소분류 동적 드롭다운, 필수/선택 해석 폼, 단계별 진행 표시 UI, 완료 결과 카드
+    - `frontend/src/router/index.js` — `/backstage`, `/backstage/dream/new` 라우트 추가 (`backstageGuard` 적용)
 
 ### 2026-03-05
 - [x] 꿈해몽 검색 API 구현 (백엔드)
@@ -233,6 +262,8 @@ cd backend && npm run start   # 프로덕션 모드
 - [ ] 꿈해몽 상세 페이지 구현
 - [ ] 사주 개인화 (생년월일 입력) → 완료 후 아래 섹션 활성화
 - [ ] 십이지신 상세 운세 페이지
+- [x] 백오피스 꿈해몽 등록 UI (`/backstage`) — Create only (1차 완료)
+- [ ] 백오피스 꿈해몽 목록/수정/삭제 (2차)
 
 ---
 

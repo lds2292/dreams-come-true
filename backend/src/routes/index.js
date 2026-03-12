@@ -11,5 +11,6 @@ router.get('/health', (req, res) => {
 router.use('/dreams', require('./dreams'));
 router.use('/categories', require('./categories'));
 router.use('/feedback', require('./feedback'));
+router.use('/backstage', require('./backoffice'));
 
 module.exports = router;
