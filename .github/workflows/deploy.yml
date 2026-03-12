@@ -5,6 +5,12 @@ on:
     branches: [main]
     paths-ignore:
       - '**/*.md'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: '배포 사유 (선택)'
+        required: false
+        default: '수동 전체 배포'
 
 jobs:
   # ──────────────────────────────────────────────
