@@ -14,7 +14,7 @@
           <span
             class="bc-item"
             :class="selectedSubName ? 'bc-link' : 'bc-active'"
-            @click="selectedSubName ? selectSub('') : null"
+            @click="selectedSubName ? goBackToSubCategory() : null"
           >{{ categoryName }}</span>
           <template v-if="selectedSubName">
             <span class="bc-sep">›</span>
@@ -26,14 +26,21 @@
     </div>
 
     <!-- 소분류 탭 -->
-    <div v-if="subCategories.length > 0" class="sub-tabs">
-      <button
-        v-for="sub in [{ slug: '', name: '전체' }, ...subCategories]"
-        :key="sub.slug"
-        class="sub-tab"
-        :class="{ active: selectedSub === sub.slug }"
-        @click="selectSub(sub.slug)"
-      >{{ sub.name }}</button>
+    <div class="sub-tabs">
+      <!-- 스켈레톤 -->
+      <template v-if="subLoading">
+        <div v-for="i in 5" :key="i" class="sub-tab-skeleton" :style="{ width: [52, 68, 44, 60, 48][i-1] + 'px' }"></div>
+      </template>
+      <!-- 실제 탭 -->
+      <template v-else-if="subCategories.length > 0">
+        <button
+          v-for="sub in [{ slug: '', name: '전체' }, ...subCategories]"
+          :key="sub.slug"
+          class="sub-tab"
+          :class="{ active: selectedSub === sub.slug }"
+          @click="selectSub(sub.slug)"
+        >{{ sub.name }}</button>
+      </template>
     </div>
 
     <!-- 로딩 -->
@@ -130,20 +137,28 @@ const page         = ref(1)
 const loading      = ref(false)
 const error        = ref(false)
 const subCategories = ref([])
-const selectedSub  = ref('')
+const subLoading    = ref(true)
+const selectedSub  = ref(route.query.sub || '')
 
 const hasMore        = computed(() => dreams.value.length < total.value)
 const remaining      = computed(() => total.value - dreams.value.length)
-const selectedSubName = computed(() =>
-  subCategories.value.find(s => s.slug === selectedSub.value)?.name ?? ''
-)
+const selectedSubName = computed(() => {
+  if (!selectedSub.value) return ''
+  // subCategories가 로드되기 전엔 route.query.subName 으로 대체
+  return subCategories.value.find(s => s.slug === selectedSub.value)?.name
+    ?? route.query.subName
+    ?? ''
+})
 
 async function fetchSubCategories() {
+  subLoading.value = true
   try {
     const data = await api.get('/categories')
     const cat = data.categories.find(c => c.slug === categorySlug.value)
     subCategories.value = cat?.sub_categories ?? []
-  } catch { /* 탭 없이 진행 */ }
+  } catch { /* 탭 없이 진행 */ } finally {
+    subLoading.value = false
+  }
 }
 
 async function fetchPage(pageNum) {
@@ -170,6 +185,10 @@ function selectSub(slug) {
   total.value = 0
   error.value = false
   fetchPage(1)
+}
+
+function goBackToSubCategory() {
+  router.push({ name: 'category', query: { slug: categorySlug.value, name: categoryName.value } })
 }
 
 function loadMore() {
@@ -210,13 +229,14 @@ onActivated(() => {
       if (el) el.scrollTop = savedScroll.value
     })
   } else {
-    // 홈 등 다른 경로에서 진입 → 초기화 후 재호출
-    dreams.value      = []
+    // 다른 경로에서 진입 → 초기화 후 재호출 (sub 쿼리 파라미터 반영)
+    dreams.value        = []
     subCategories.value = []
-    page.value        = 1
-    total.value       = 0
-    error.value       = false
-    selectedSub.value = ''
+    subLoading.value    = true
+    page.value          = 1
+    total.value         = 0
+    error.value         = false
+    selectedSub.value   = route.query.sub || ''
     fetchSubCategories()
     fetchPage(1)
   }
@@ -228,6 +248,8 @@ onMounted(() => {
     router.replace({ name: 'home' })
     return
   }
+  // URL에 sub가 있으면 초기 상태로 반영 (SubCategoryView에서 선택 후 진입)
+  selectedSub.value = route.query.sub || ''
   fetchSubCategories()
   fetchPage(1)
 })
@@ -294,6 +316,16 @@ onMounted(() => {
 .cat-total {
   font-size: 12px;
   color: #55516E;
+}
+
+/* ── 소분류 탭 스켈레톤 ── */
+.sub-tab-skeleton {
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: linear-gradient(90deg, #2E2C42 25%, #3A3858 50%, #2E2C42 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
 }
 
 /* ── 소분류 탭 ── */
