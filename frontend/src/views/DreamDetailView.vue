@@ -164,16 +164,26 @@ function starStyle(n) {
   display: flex;
   flex-direction: column;
   padding-bottom: 40px;
-  background: #111022;
+  background: var(--bg-base);
   min-height: 100%;
 }
 
 /* ── 히어로 ── */
 .hero {
   position: relative;
-  background: linear-gradient(160deg, #1e0a3c 0%, #3b0764 45%, #5b21b6 100%);
+  background: linear-gradient(160deg, #4C1D95 0%, #7C3AED 35%, #F9A8D4 75%, #FDE68A 100%);
   padding: 0 20px 36px;
   overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, var(--bg-base));
+  pointer-events: none;
 }
 .back-btn {
   position: relative;
@@ -202,7 +212,7 @@ function starStyle(n) {
 .star {
   position: absolute;
   border-radius: 50%;
-  background: #fff;
+  background: #ffffff;
   opacity: 0.7;
   animation: twinkle var(--dur, 2s) ease-in-out infinite alternate;
 }
@@ -242,10 +252,10 @@ function starStyle(n) {
   padding: 4px 11px;
   border-radius: 20px;
 }
-.dt-예지몽 { background: rgba(254,249,195,0.2); color: #fde68a; border: 1px solid rgba(253,230,138,0.3); }
-.dt-현실몽 { background: rgba(219,234,254,0.2); color: #bfdbfe; border: 1px solid rgba(191,219,254,0.3); }
-.dt-태몽   { background: rgba(252,231,243,0.2); color: #fbcfe8; border: 1px solid rgba(251,207,232,0.3); }
-.dt-잡몽   { background: rgba(241,245,249,0.2); color: #cbd5e1; border: 1px solid rgba(203,213,225,0.3); }
+.dt-예지몽 { background: rgba(254,249,195,0.3); color: #fde68a; border: 1px solid rgba(253,230,138,0.5); }
+.dt-현실몽 { background: rgba(219,234,254,0.3); color: #bfdbfe; border: 1px solid rgba(191,219,254,0.5); }
+.dt-태몽   { background: rgba(252,231,243,0.3); color: #fbcfe8; border: 1px solid rgba(251,207,232,0.5); }
+.dt-잡몽   { background: rgba(255,255,255,0.2); color: #e2e8f0; border: 1px solid rgba(226,232,240,0.4); }
 
 .detail-title {
   font-family: 'Noto Serif KR', serif;
@@ -277,11 +287,11 @@ function starStyle(n) {
 }
 
 /* 섹션별 테마 */
-.section-basic   { background: #1B1A2E; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid #7C3AED; }
-.section-fortune { background: #1B1A2E; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid #f59e0b; }
-.section-reality { background: #1B1A2E; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid #10b981; }
-.section-baby    { background: #1B1A2E; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid #ec4899; }
-.section-random  { background: #1B1A2E; border: 1px solid rgba(255,255,255,0.07); border-left: 3px solid #64748b; }
+.section-basic   { background: var(--bg-surface); border: 1px solid var(--border-default); border-left: 3px solid var(--color-primary-700); box-shadow: var(--shadow-card); }
+.section-fortune { background: var(--bg-surface); border: 1px solid var(--badge-fortune-border); border-left: 3px solid var(--badge-fortune-border); box-shadow: var(--shadow-card); }
+.section-reality { background: var(--bg-surface); border: 1px solid var(--badge-reality-border); border-left: 3px solid var(--badge-reality-border); box-shadow: var(--shadow-card); }
+.section-baby    { background: var(--bg-surface); border: 1px solid var(--badge-baby-border); border-left: 3px solid var(--badge-baby-border); box-shadow: var(--shadow-card); }
+.section-random  { background: var(--bg-surface); border: 1px solid var(--badge-random-border); border-left: 3px solid var(--badge-random-border); box-shadow: var(--shadow-card); }
 
 .section-header {
   display: flex;
@@ -296,16 +306,16 @@ function starStyle(n) {
   margin: 0;
   letter-spacing: 0.2px;
 }
-.section-basic   .section-title { color: #A78BFA; }
-.section-fortune .section-title { color: #fbbf24; }
-.section-reality .section-title { color: #34d399; }
-.section-baby    .section-title { color: #f472b6; }
-.section-random  .section-title { color: #94a3b8; }
+.section-basic   .section-title { color: var(--color-primary-700); }
+.section-fortune .section-title { color: var(--badge-fortune-text); }
+.section-reality .section-title { color: var(--badge-reality-text); }
+.section-baby    .section-title { color: var(--badge-baby-text); }
+.section-random  .section-title { color: var(--badge-random-text); }
 
 .section-content {
   font-family: 'Noto Serif KR', serif;
   font-size: 14px;
-  color: #C0BDD8;
+  color: var(--text-primary);
   line-height: 1.9;
   margin: 0;
   white-space: pre-wrap;
@@ -324,7 +334,7 @@ function starStyle(n) {
 .feedback-question {
   font-size: 14px;
   font-weight: 600;
-  color: #C0BDD8;
+  color: var(--text-secondary);
   margin: 0;
 }
 .feedback-buttons {
@@ -335,7 +345,7 @@ function starStyle(n) {
   height: 42px;
   padding: 0 20px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-default);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -343,11 +353,11 @@ function starStyle(n) {
   -webkit-tap-highlight-color: transparent;
 }
 .feedback-btn:active { transform: scale(0.95); opacity: 0.8; }
-.btn-helpful   { background: rgba(16,185,129,0.15); color: #34d399; border-color: rgba(16,185,129,0.3); }
-.btn-unhelpful { background: rgba(239,68,68,0.12);  color: #f87171; border-color: rgba(239,68,68,0.25); }
+.btn-helpful   { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+.btn-unhelpful { background: #fff1f2; color: #9f1239; border-color: #fecdd3; }
 
-.feedback-done-title { font-size: 16px; font-weight: 700; color: #F2F0FF; margin: 0; }
-.feedback-done-desc  { font-size: 13px; color: #55516E; margin: 0; }
+.feedback-done-title { font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 0; }
+.feedback-done-desc  { font-size: 13px; color: var(--text-muted); margin: 0; }
 
 /* ── 데이터 없음 ── */
 .no-data {
@@ -358,12 +368,12 @@ function starStyle(n) {
   padding: 80px 20px;
 }
 .no-data-emoji { font-size: 48px; margin: 0; }
-.no-data-text  { font-size: 15px; color: #55516E; margin: 0; }
+.no-data-text  { font-size: 15px; color: var(--text-muted); margin: 0; }
 .no-data-btn {
   margin-top: 8px;
   padding: 10px 24px;
-  background: #5b21b6;
-  color: #fff;
+  background: var(--color-primary-700);
+  color: var(--text-inverse);
   border: none;
   border-radius: 20px;
   font-size: 14px;

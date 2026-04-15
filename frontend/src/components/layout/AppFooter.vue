@@ -9,8 +9,8 @@
 
 <style scoped>
 .app-footer {
-  background-color: #0D0C1A;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--divider);
 }
 
 .footer-inner {
@@ -25,12 +25,12 @@
 .company-name {
   font-size: 13px;
   font-weight: 700;
-  color: #6B6888;
+  color: var(--text-secondary);
 }
 
 .footer-copyright {
   margin: 0;
   font-size: 11px;
-  color: #2E2C42;
+  color: var(--text-disabled);
 }
 </style>

@@ -42,8 +42,8 @@ defineProps({
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: #111022;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .header-inner {
@@ -64,7 +64,7 @@ defineProps({
   font-family: 'Noto Serif KR', serif;
   font-size: 17px;
   font-weight: 700;
-  color: #C4B5FD;
+  color: var(--color-primary-700);
   letter-spacing: -0.3px;
 }
 
@@ -85,10 +85,10 @@ defineProps({
   background: transparent;
   border-radius: 50%;
   cursor: pointer;
-  color: #A0A0C8;
+  color: var(--color-primary-700);
   transition: background-color 0.15s;
 }
-.icon-btn:active { background-color: rgba(255, 255, 255, 0.08); }
+.icon-btn:active { background-color: var(--bg-elevated); }
 
 .notification-dot {
   position: absolute;
@@ -96,16 +96,16 @@ defineProps({
   right: 8px;
   width: 7px;
   height: 7px;
-  background-color: #ff4444;
+  background-color: #ef4444;
   border-radius: 50%;
-  border: 1.5px solid #111022;
+  border: 1.5px solid var(--bg-surface);
 }
 
 .login-btn {
   height: 34px;
   padding: 0 16px;
-  background: #5b21b6;
-  color: #fff;
+  background: var(--color-primary-700);
+  color: var(--text-inverse);
   border: none;
   border-radius: 20px;
   font-size: 13px;
@@ -113,5 +113,5 @@ defineProps({
   cursor: pointer;
   transition: background 0.15s;
 }
-.login-btn:active { background: #4c1d95; }
+.login-btn:active { background: var(--color-primary-900); }
 </style>

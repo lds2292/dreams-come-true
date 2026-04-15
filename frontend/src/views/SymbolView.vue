@@ -156,7 +156,7 @@ const categories = [
 .symbol-icon-wrap {
   width: 64px;
   height: 64px;
-  background: rgba(167, 139, 250, 0.08);
+  background: var(--color-primary-100);
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -165,7 +165,7 @@ const categories = [
 .symbol-title {
   font-size: 20px;
   font-weight: 700;
-  color: #F2F0FF;
+  color: var(--text-primary);
   margin: 0;
   letter-spacing: -0.3px;
 }
@@ -182,7 +182,7 @@ const categories = [
   padding: 24px;
 }
 .popup-box {
-  background: #1B1A2E;
+  background: var(--bg-surface);
   border-radius: 20px;
   padding: 32px 24px 24px;
   width: 100%;
@@ -192,6 +192,7 @@ const categories = [
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  box-shadow: var(--shadow-elevated);
 }
 .popup-emoji {
   font-size: 40px;
@@ -201,29 +202,29 @@ const categories = [
 .popup-title {
   font-size: 18px;
   font-weight: 700;
-  color: #F2F0FF;
+  color: var(--text-primary);
   margin: 0;
 }
 .popup-desc {
   font-size: 14px;
-  color: #8882A8;
+  color: var(--text-secondary);
   margin: 4px 0 16px;
   line-height: 1.7;
 }
 .popup-close {
   width: 100%;
   padding: 14px;
-  background: #7C3AED;
+  background: var(--color-primary-700);
   border: none;
   border-radius: 12px;
-  color: #fff;
+  color: var(--text-inverse);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
 }
 .popup-close:active {
-  background: #6D28D9;
+  background: var(--color-primary-900);
 }
 
 /* 팝업 트랜지션 */
@@ -254,18 +255,20 @@ const categories = [
   display: flex;
   align-items: center;
   gap: 14px;
-  background: #1B1A2E;
-  border: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
   border-radius: 14px;
   padding: 16px;
   cursor: pointer;
   text-align: left;
   width: 100%;
-  transition: background 0.15s;
+  box-shadow: var(--shadow-card);
+  transition: background 0.15s, box-shadow 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 .symbol-cat-card:active {
-  background: #22213A;
+  background: var(--bg-elevated);
+  box-shadow: none;
 }
 .cat-icon-wrap {
   width: 48px;
@@ -283,30 +286,32 @@ const categories = [
 .cat-title {
   font-size: 15px;
   font-weight: 700;
-  color: #F2F0FF;
+  color: var(--text-primary);
   margin: 0 0 4px;
 }
 .cat-desc {
   font-size: 12px;
-  color: #6B6888;
+  color: var(--text-muted);
   margin: 0;
   line-height: 1.4;
 }
 .cat-arrow {
-  color: #3D3B55;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
 /* ── 소개 카드 ── */
 .intro-card {
-  background: #1B1A2E;
-  border-left: 3px solid #7C3AED;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-left: 3px solid var(--color-primary-700);
   border-radius: 14px;
   padding: 18px;
+  box-shadow: var(--shadow-card);
 }
 .intro-text {
   font-size: 14px;
-  color: #A09DC0;
+  color: var(--text-secondary);
   line-height: 1.8;
   margin: 0;
 }

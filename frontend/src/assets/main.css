@@ -2,6 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Backgrounds */
+  --bg-base: #FAF5E9;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #F3F0FF;
+
+  /* Brand */
+  --color-primary-900: #3B0764;
+  --color-primary-700: #6D28D9;
+  --color-primary-500: #A78BFA;
+  --color-primary-200: #DDD6FE;
+  --color-primary-100: #EDE9FE;
+  --color-dawn-rose: #F9A8D4;
+  --color-dawn-gold: #FDE68A;
+
+  /* Text */
+  --text-primary: #1A0533;
+  --text-secondary: #4C1D95;
+  --text-muted: #7C3AED;
+  --text-inverse: #FAF5E9;
+  --text-disabled: #C4B5FD;
+
+  /* Dream category badges */
+  --badge-fortune-bg: #FEF3C7;
+  --badge-fortune-text: #92400E;
+  --badge-fortune-border: #F59E0B;
+  --badge-reality-bg: #DBEAFE;
+  --badge-reality-text: #1E3A8A;
+  --badge-reality-border: #3B82F6;
+  --badge-baby-bg: #FCE7F3;
+  --badge-baby-text: #9D174D;
+  --badge-baby-border: #EC4899;
+  --badge-random-bg: #F3F4F6;
+  --badge-random-text: #374151;
+  --badge-random-border: #9CA3AF;
+
+  /* Borders / Shadows */
+  --border-default: #E8E0F5;
+  --border-strong: #C4B5FD;
+  --divider: #F0EAF8;
+  --shadow-card: 0 2px 8px rgba(109,40,217,0.08);
+  --shadow-elevated: 0 8px 24px rgba(109,40,217,0.14);
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -17,8 +61,8 @@
     margin: 0;
     padding: 0;
     font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background-color: #111022;
-    color: #F2F0FF;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
     overscroll-behavior: none;
     /* 노치/홈바 safe area 적용 */
     padding-top: env(safe-area-inset-top);

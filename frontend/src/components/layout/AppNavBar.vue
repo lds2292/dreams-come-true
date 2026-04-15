@@ -55,7 +55,7 @@ const IconSymbol = defineComponent({
     return () => h('svg', { width: 24, height: 24, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, [
       // 눈 외곽
       h('path', { d: 'M1 12C3.5 6 7.5 3 12 3s8.5 3 11 9c-2.5 6-6.5 9-11 9S3.5 18 1 12z',
-        fill: props.active ? 'rgba(167,139,250,0.15)' : 'none' }),
+        fill: props.active ? 'rgba(109,40,217,0.12)' : 'none' }),
       // 홍채
       h('circle', { cx: 12, cy: 12, r: 3.5,
         fill: props.active ? 'currentColor' : 'none',
@@ -94,8 +94,8 @@ const navItems = [
   position: sticky;
   bottom: 0;
   z-index: 100;
-  background-color: #111022;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-default);
   /* 홈바 safe area */
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -117,14 +117,14 @@ const navItems = [
   justify-content: center;
   gap: 3px;
   text-decoration: none;
-  color: #55516E;
+  color: var(--text-disabled);
   transition: color 0.15s;
   -webkit-tap-highlight-color: transparent;
   cursor: pointer;
 }
 
 .nav-item.active {
-  color: #A78BFA;
+  color: var(--color-primary-700);
 }
 
 .nav-item:active {
@@ -150,7 +150,7 @@ const navItems = [
   min-width: 16px;
   height: 16px;
   padding: 0 4px;
-  background-color: #ff4444;
+  background-color: #ef4444;
   color: white;
   font-size: 9px;
   font-weight: 700;

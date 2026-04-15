@@ -181,7 +181,7 @@ function socialLogin(provider) {
 .login-page {
   min-height: 100vh;
   min-height: 100dvh;
-  background: #fff;
+  background: var(--bg-base);
   display: flex;
   flex-direction: column;
   padding: 0 24px 40px;
@@ -215,8 +215,8 @@ function socialLogin(provider) {
   gap: 8px;
 }
 .login-logo  { font-size: 48px; line-height: 1; }
-.login-title { font-size: 22px; font-weight: 800; color: #1a1a1a; margin: 0; letter-spacing: -0.5px; }
-.login-sub   { font-size: 13px; color: #888; margin: 0; }
+.login-title { font-size: 22px; font-weight: 800; color: var(--text-primary); margin: 0; letter-spacing: -0.5px; }
+.login-sub   { font-size: 13px; color: var(--text-muted); margin: 0; }
 
 /* ── 폼 ── */
 .login-form {
@@ -225,21 +225,21 @@ function socialLogin(provider) {
   gap: 16px;
 }
 .field { display: flex; flex-direction: column; gap: 6px; }
-.field-label { font-size: 13px; font-weight: 600; color: #333; }
+.field-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
 .input-wrap {
   display: flex;
   align-items: center;
   gap: 10px;
-  border: 1.5px solid #e5e7eb;
+  border: 1.5px solid var(--border-default);
   border-radius: 12px;
   padding: 0 14px;
   height: 52px;
-  background: #fafafa;
+  background: var(--bg-surface);
   transition: border-color 0.2s, background 0.2s;
 }
 .input-wrap.focused {
-  border-color: #7c3aed;
-  background: #fff;
+  border-color: var(--color-primary-700);
+  background: var(--bg-surface);
 }
 .field.error .input-wrap { border-color: #ef4444; }
 .input-icon { color: #bbb; flex-shrink: 0; }
@@ -249,11 +249,11 @@ function socialLogin(provider) {
   background: transparent;
   outline: none;
   font-size: 15px;
-  color: #111;
-  caret-color: #7c3aed;
+  color: var(--text-primary);
+  caret-color: var(--color-primary-700);
   min-width: 0;
 }
-.field-input::placeholder { color: #bbb; }
+.field-input::placeholder { color: var(--text-disabled); }
 .pw-toggle {
   display: flex;
   align-items: center;
@@ -291,8 +291,8 @@ function socialLogin(provider) {
   justify-content: center;
   gap: 8px;
   height: 54px;
-  background: #5b21b6;
-  color: #fff;
+  background: var(--color-primary-700);
+  color: var(--text-inverse);
   border: none;
   border-radius: 14px;
   font-size: 16px;
@@ -301,7 +301,7 @@ function socialLogin(provider) {
   margin-top: 4px;
   transition: background 0.15s;
 }
-.submit-btn:active:not(:disabled) { background: #4c1d95; }
+.submit-btn:active:not(:disabled) { background: var(--color-primary-900); }
 .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .btn-spinner {
   width: 18px;
@@ -320,8 +320,8 @@ function socialLogin(provider) {
   justify-content: center;
   gap: 8px;
 }
-.form-link    { font-size: 13px; color: #666; text-decoration: none; }
-.dot-divider  { color: #ddd; font-size: 12px; }
+.form-link    { font-size: 13px; color: var(--text-muted); text-decoration: none; }
+.dot-divider  { color: var(--border-default); font-size: 12px; }
 
 /* ── 소셜 로그인 ── */
 .social-section { margin-top: 28px; }
@@ -331,8 +331,8 @@ function socialLogin(provider) {
   gap: 12px;
   margin-bottom: 16px;
 }
-.divider-line { flex: 1; height: 1px; background: #e5e7eb; }
-.divider-text { font-size: 12px; color: #aaa; white-space: nowrap; }
+.divider-line { flex: 1; height: 1px; background: var(--border-default); }
+.divider-text { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
 .social-btns  { display: flex; flex-direction: column; gap: 10px; }
 .social-btn {
   display: flex;

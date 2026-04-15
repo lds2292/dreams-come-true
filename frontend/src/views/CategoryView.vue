@@ -269,15 +269,15 @@ onMounted(() => {
   padding: 16px 16px 12px;
   position: sticky;
   top: 0;
-  background: #111022;
+  background: var(--bg-surface);
   z-index: 10;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--border-default);
 }
 .back-btn {
   background: none;
   border: none;
   padding: 4px;
-  color: #A78BFA;
+  color: var(--color-primary-700);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -299,23 +299,23 @@ onMounted(() => {
   margin: 0;
 }
 .bc-active {
-  color: #F2F0FF;
+  color: var(--text-primary);
 }
 .bc-link {
-  color: #6B6888;
+  color: var(--text-muted);
   cursor: pointer;
 }
 .bc-link:active {
-  color: #A78BFA;
+  color: var(--color-primary-700);
 }
 .bc-sep {
   font-size: 16px;
-  color: #3D3B55;
+  color: var(--text-disabled);
   line-height: 1;
 }
 .cat-total {
   font-size: 12px;
-  color: #55516E;
+  color: var(--text-muted);
 }
 
 /* ── 소분류 탭 스켈레톤 ── */
@@ -323,7 +323,7 @@ onMounted(() => {
   height: 32px;
   flex-shrink: 0;
   border-radius: 20px;
-  background: linear-gradient(90deg, #2E2C42 25%, #3A3858 50%, #2E2C42 75%);
+  background: linear-gradient(90deg, #EDE9FE 25%, #DDD6FE 50%, #EDE9FE 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
 }
@@ -336,16 +336,16 @@ onMounted(() => {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--border-default);
 }
 .sub-tabs::-webkit-scrollbar { display: none; }
 .sub-tab {
   flex-shrink: 0;
   padding: 6px 14px;
   border-radius: 20px;
-  border: 1px solid rgba(167,139,250,0.2);
-  background: transparent;
-  color: #6B6888;
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  color: var(--text-muted);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -353,9 +353,9 @@ onMounted(() => {
   -webkit-tap-highlight-color: transparent;
 }
 .sub-tab.active {
-  background: #5B21B6;
-  border-color: #5B21B6;
-  color: #fff;
+  background: var(--color-primary-700);
+  border-color: var(--color-primary-700);
+  color: var(--text-inverse);
 }
 
 /* ── 스켈레톤 ── */
@@ -366,18 +366,19 @@ onMounted(() => {
   gap: 10px;
 }
 .skeleton-card {
-  background: #1B1A2E;
+  background: var(--bg-surface);
   border-radius: 12px;
   padding: 14px;
   display: flex;
   align-items: center;
   gap: 12px;
+  box-shadow: var(--shadow-card);
 }
 .sk-icon {
   width: 44px;
   height: 44px;
   border-radius: 10px;
-  background: #2E2C42;
+  background: var(--color-primary-200);
   flex-shrink: 0;
 }
 .sk-body {
@@ -389,7 +390,7 @@ onMounted(() => {
 .sk-line {
   height: 12px;
   border-radius: 6px;
-  background: linear-gradient(90deg, #2E2C42 25%, #3A3858 50%, #2E2C42 75%);
+  background: linear-gradient(90deg, #EDE9FE 25%, #DDD6FE 50%, #EDE9FE 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
 }
@@ -408,18 +409,21 @@ onMounted(() => {
   gap: 8px;
 }
 .dream-card {
-  background: #1B1A2E;
+  background: var(--bg-surface);
   border-radius: 12px;
+  border: 1px solid var(--border-default);
   padding: 14px;
   display: flex;
   align-items: center;
   gap: 12px;
   cursor: pointer;
-  transition: background 0.15s;
+  box-shadow: var(--shadow-card);
+  transition: background 0.15s, box-shadow 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 .dream-card:active {
-  background: #22213A;
+  background: var(--bg-elevated);
+  box-shadow: none;
 }
 .dream-icon {
   width: 44px;
@@ -427,7 +431,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #1E1B35;
+  background: var(--bg-elevated);
   border-radius: 10px;
   flex-shrink: 0;
 }
@@ -442,7 +446,7 @@ onMounted(() => {
 .dream-title {
   font-size: 14px;
   font-weight: 600;
-  color: #F2F0FF;
+  color: var(--text-primary);
   margin: 0 0 4px;
   white-space: nowrap;
   overflow: hidden;
@@ -460,14 +464,14 @@ onMounted(() => {
   padding: 2px 7px;
   border-radius: 20px;
 }
-.dt-fortune { background: rgba(245,158,11,0.15);  color: #fbbf24; }
-.dt-baby    { background: rgba(236,72,153,0.15);  color: #f472b6; }
-.dt-reality { background: rgba(59,130,246,0.15);  color: #60a5fa; }
-.dt-random  { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.dt-fortune { background: var(--badge-fortune-bg); color: var(--badge-fortune-text); }
+.dt-baby    { background: var(--badge-baby-bg);    color: var(--badge-baby-text); }
+.dt-reality { background: var(--badge-reality-bg); color: var(--badge-reality-text); }
+.dt-random  { background: var(--badge-random-bg);  color: var(--badge-random-text); }
 
 .dream-summary {
   font-size: 12px;
-  color: #6B6888;
+  color: var(--text-muted);
   margin: 0;
   line-height: 1.5;
   display: -webkit-box;
@@ -476,7 +480,7 @@ onMounted(() => {
   overflow: hidden;
 }
 .dream-arrow {
-  color: #3D3B55;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -486,10 +490,10 @@ onMounted(() => {
   width: calc(100% - 32px);
   margin: 8px 16px 0;
   padding: 14px;
-  background: #1B1A2E;
-  border: 1px solid rgba(167, 139, 250, 0.2);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-strong);
   border-radius: 12px;
-  color: #A78BFA;
+  color: var(--color-primary-700);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -497,7 +501,7 @@ onMounted(() => {
   -webkit-tap-highlight-color: transparent;
 }
 .load-more:active:not(:disabled) {
-  background: #22213A;
+  background: var(--bg-elevated);
 }
 .load-more:disabled {
   opacity: 0.5;
@@ -506,13 +510,13 @@ onMounted(() => {
 .list-end {
   text-align: center;
   font-size: 12px;
-  color: #3D3B55;
+  color: var(--text-muted);
   margin: 16px 0 0;
 }
 .empty-msg {
   text-align: center;
   font-size: 14px;
-  color: #55516E;
+  color: var(--text-muted);
   padding: 48px 16px;
 }
 </style>

@@ -309,7 +309,7 @@ async function onSubmit() {
 .signup-page {
   min-height: 100vh;
   min-height: 100dvh;
-  background: #fff;
+  background: var(--bg-base);
   display: flex;
   flex-direction: column;
   padding: 0 24px 48px;
@@ -323,9 +323,9 @@ async function onSubmit() {
   align-self: flex-start;
   display: flex; align-items: center; justify-content: center;
   width: 40px; height: 40px;
-  border: none; background: transparent; cursor: pointer; color: #333; border-radius: 50%;
+  border: none; background: transparent; cursor: pointer; color: var(--text-primary); border-radius: 50%;
 }
-.back-btn:active { background: #f5f5f5; }
+.back-btn:active { background: var(--bg-elevated); }
 
 /* ── 히어로 ── */
 .signup-hero {
@@ -333,8 +333,8 @@ async function onSubmit() {
   padding: 24px 0 28px; gap: 6px;
 }
 .signup-logo  { font-size: 40px; line-height: 1; }
-.signup-title { font-size: 22px; font-weight: 800; color: #1a1a1a; margin: 0; letter-spacing: -0.5px; }
-.signup-sub   { font-size: 13px; color: #888; margin: 0; }
+.signup-title { font-size: 22px; font-weight: 800; color: var(--text-primary); margin: 0; letter-spacing: -0.5px; }
+.signup-sub   { font-size: 13px; color: var(--text-muted); margin: 0; }
 
 /* ── 단계 표시 ── */
 .steps {
@@ -352,7 +352,7 @@ async function onSubmit() {
   transform: translateX(-50%);
   width: 60px;
   height: 2px;
-  background: #e5e7eb;
+  background: var(--border-default);
   z-index: 0;
 }
 .step-item {
@@ -362,34 +362,34 @@ async function onSubmit() {
 .step-circle {
   width: 28px; height: 28px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: #f0f0f0; color: #aaa; font-size: 12px; font-weight: 700;
+  background: var(--color-primary-200); color: var(--text-muted); font-size: 12px; font-weight: 700;
   transition: background 0.2s, color 0.2s;
 }
-.step-circle.active { background: #5b21b6; color: #fff; }
+.step-circle.active { background: var(--color-primary-700); color: var(--text-inverse); }
 .step-circle.done   { background: #10b981; color: #fff; }
-.step-label { font-size: 11px; color: #aaa; }
+.step-label { font-size: 11px; color: var(--text-muted); }
 
 /* ── 폼 공통 ── */
 .signup-form { display: flex; flex-direction: column; gap: 16px; }
 .field { display: flex; flex-direction: column; gap: 6px; }
-.field-label { font-size: 13px; font-weight: 600; color: #333; }
+.field-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
 .input-wrap {
   display: flex; align-items: center; gap: 10px;
-  border: 1.5px solid #e5e7eb; border-radius: 12px;
-  padding: 0 14px; height: 52px; background: #fafafa;
+  border: 1.5px solid var(--border-default); border-radius: 12px;
+  padding: 0 14px; height: 52px; background: var(--bg-surface);
   transition: border-color 0.2s, background 0.2s;
 }
-.input-wrap.focused { border-color: #7c3aed; background: #fff; }
+.input-wrap.focused { border-color: var(--color-primary-700); background: var(--bg-surface); }
 .field.error .input-wrap { border-color: #ef4444; }
-.input-icon { color: #bbb; flex-shrink: 0; }
+.input-icon { color: var(--text-disabled); flex-shrink: 0; }
 .field-input {
   flex: 1; border: none; background: transparent; outline: none;
-  font-size: 15px; color: #111; caret-color: #7c3aed; min-width: 0;
+  font-size: 15px; color: var(--text-primary); caret-color: var(--color-primary-700); min-width: 0;
 }
-.field-input::placeholder { color: #bbb; }
+.field-input::placeholder { color: var(--text-disabled); }
 .pw-toggle {
   display: flex; align-items: center; background: none;
-  border: none; cursor: pointer; color: #bbb; padding: 0; flex-shrink: 0;
+  border: none; cursor: pointer; color: var(--text-disabled); padding: 0; flex-shrink: 0;
 }
 .field-error { font-size: 12px; color: #ef4444; margin: 0; padding-left: 4px; }
 
@@ -398,7 +398,7 @@ async function onSubmit() {
   display: flex; align-items: center; gap: 4px; margin-top: 2px;
 }
 .strength-bar {
-  flex: 1; height: 4px; border-radius: 2px; background: #e5e7eb;
+  flex: 1; height: 4px; border-radius: 2px; background: var(--border-default);
   transition: background 0.3s;
 }
 .bar-weak   { background: #ef4444; }
@@ -414,42 +414,42 @@ async function onSubmit() {
 /* ── 성별 ── */
 .gender-btns { display: flex; gap: 8px; }
 .gender-btn {
-  flex: 1; height: 46px; border: 1.5px solid #e5e7eb;
-  border-radius: 12px; background: #fafafa;
-  font-size: 14px; font-weight: 600; color: #555; cursor: pointer;
+  flex: 1; height: 46px; border: 1.5px solid var(--border-default);
+  border-radius: 12px; background: var(--bg-surface);
+  font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer;
   transition: all 0.15s;
 }
 .gender-btn.selected {
-  border-color: #7c3aed; background: #f5f3ff; color: #5b21b6;
+  border-color: var(--color-primary-700); background: var(--color-primary-100); color: var(--color-primary-700);
 }
 
 /* ── 약관 ── */
 .terms-group {
-  background: #fafafa;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
   border-radius: 14px;
   padding: 16px;
   display: flex; flex-direction: column; gap: 12px;
 }
 .terms-all { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-.terms-all-label { font-size: 15px; font-weight: 700; color: #111; }
-.terms-divider { height: 1px; background: #e5e7eb; }
+.terms-all-label { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+.terms-divider { height: 1px; background: var(--divider); }
 .terms-item { display: flex; align-items: center; gap: 10px; cursor: pointer; }
 .terms-item input[type="checkbox"],
 .terms-all  input[type="checkbox"] { display: none; }
 .check-box {
   width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0;
-  border: 1.5px solid #d1d5db; background: #fff;
+  border: 1.5px solid var(--border-strong); background: var(--bg-surface);
   display: flex; align-items: center; justify-content: center;
   transition: all 0.15s;
 }
-.check-box.checked { background: #5b21b6; border-color: #5b21b6; }
-.terms-label { flex: 1; font-size: 14px; color: #333; display: flex; align-items: center; gap: 6px; }
+.check-box.checked { background: var(--color-primary-700); border-color: var(--color-primary-700); }
+.terms-label { flex: 1; font-size: 14px; color: var(--text-primary); display: flex; align-items: center; gap: 6px; }
 .required-badge {
-  font-size: 10px; font-weight: 700; color: #5b21b6;
-  background: #ede9fe; padding: 1px 5px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; color: var(--color-primary-700);
+  background: var(--color-primary-100); padding: 1px 5px; border-radius: 4px;
 }
-.terms-view { font-size: 12px; color: #aaa; text-decoration: none; flex-shrink: 0; }
+.terms-view { font-size: 12px; color: var(--text-muted); text-decoration: none; flex-shrink: 0; }
 
 /* ── 에러 배너 ── */
 .signup-error {
@@ -461,12 +461,12 @@ async function onSubmit() {
 /* ── 버튼 ── */
 .submit-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
-  height: 54px; background: #5b21b6; color: #fff;
+  height: 54px; background: var(--color-primary-700); color: var(--text-inverse);
   border: none; border-radius: 14px; font-size: 16px; font-weight: 700;
   cursor: pointer; transition: background 0.15s; width: 100%;
 }
 .step2-actions .submit-btn { width: auto; flex: 1; }
-.submit-btn:active:not(:disabled) { background: #4c1d95; }
+.submit-btn:active:not(:disabled) { background: var(--color-primary-900); }
 .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .btn-spinner {
   width: 18px; height: 18px;
@@ -477,12 +477,12 @@ async function onSubmit() {
 
 .step2-actions { display: flex; gap: 10px; }
 .back-step-btn {
-  height: 54px; width: 80px; background: #f5f5f7;
+  height: 54px; width: 80px; background: var(--bg-elevated);
   border: none; border-radius: 14px; font-size: 15px;
-  font-weight: 600; color: #555; cursor: pointer; flex-shrink: 0;
+  font-weight: 600; color: var(--text-secondary); cursor: pointer; flex-shrink: 0;
 }
-.back-step-btn:active { background: #ebebeb; }
+.back-step-btn:active { background: var(--color-primary-200); }
 
-.login-link { text-align: center; font-size: 13px; color: #888; margin: 4px 0 0; }
-.link { color: #5b21b6; font-weight: 600; text-decoration: none; }
+.login-link { text-align: center; font-size: 13px; color: var(--text-muted); margin: 4px 0 0; }
+.link { color: var(--color-primary-700); font-weight: 600; text-decoration: none; }
 </style>

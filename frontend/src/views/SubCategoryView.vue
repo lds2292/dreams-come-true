@@ -123,15 +123,15 @@ function goToCategory(subSlug, subName) {
   padding: 16px 16px 14px;
   position: sticky;
   top: 0;
-  background: #111022;
+  background: var(--bg-surface);
   z-index: 10;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid var(--border-default);
 }
 .back-btn {
   background: none;
   border: none;
   padding: 4px;
-  color: #A78BFA;
+  color: var(--color-primary-700);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -145,14 +145,14 @@ function goToCategory(subSlug, subName) {
 }
 .header-hint {
   font-size: 11px;
-  color: #55516E;
+  color: var(--text-muted);
   margin: 0;
   font-weight: 500;
 }
 .header-title {
   font-size: 18px;
   font-weight: 700;
-  color: #F2F0FF;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -170,18 +170,19 @@ function goToCategory(subSlug, subName) {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: linear-gradient(135deg, #1E1B35, #251F40);
-  border: 1px solid rgba(167, 139, 250, 0.25);
+  background: linear-gradient(135deg, var(--bg-elevated), var(--color-primary-100));
+  border: 1px solid var(--border-strong);
   border-radius: 16px;
   padding: 16px;
   cursor: pointer;
   text-align: left;
+  box-shadow: var(--shadow-card);
   transition: all 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 .all-card:active {
   transform: scale(0.98);
-  background: linear-gradient(135deg, #251F40, #2D2550);
+  background: var(--color-primary-200);
 }
 .all-icon {
   width: 52px;
@@ -189,7 +190,7 @@ function goToCategory(subSlug, subName) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(124, 58, 237, 0.15);
+  background: var(--color-primary-200);
   border-radius: 14px;
   flex-shrink: 0;
 }
@@ -207,14 +208,14 @@ function goToCategory(subSlug, subName) {
 .all-label {
   font-size: 15px;
   font-weight: 700;
-  color: #F2F0FF;
+  color: var(--text-primary);
 }
 .all-desc {
   font-size: 12px;
-  color: #6B6888;
+  color: var(--text-muted);
 }
 .card-arrow {
-  color: #4A4766;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -228,30 +229,31 @@ function goToCategory(subSlug, subName) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #1B1A2E;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
   border-radius: 14px;
   padding: 16px 14px;
   cursor: pointer;
   text-align: left;
+  box-shadow: var(--shadow-card);
   transition: all 0.15s;
   -webkit-tap-highlight-color: transparent;
   gap: 8px;
 }
 .sub-card:active {
-  background: #22213A;
-  border-color: rgba(167, 139, 250, 0.3);
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
   transform: scale(0.97);
 }
 .sub-name {
   font-size: 14px;
   font-weight: 600;
-  color: #C4B5FD;
+  color: var(--text-secondary);
   line-height: 1.4;
   flex: 1;
 }
 .sub-arrow {
-  color: #3D3B55;
+  color: var(--text-muted);
   flex-shrink: 0;
 }
 
@@ -261,12 +263,12 @@ function goToCategory(subSlug, subName) {
 }
 .sk-pulse.all-card {
   height: 84px;
-  background: #1B1A2E;
+  background: var(--color-primary-100);
   border-color: transparent;
 }
 .sk-pulse.sub-card {
   height: 56px;
-  background: #1B1A2E;
+  background: var(--color-primary-100);
   border-color: transparent;
 }
 @keyframes pulse {
@@ -284,12 +286,12 @@ function goToCategory(subSlug, subName) {
 }
 .empty-text {
   font-size: 14px;
-  color: #55516E;
+  color: var(--text-muted);
   margin: 0;
 }
 .goto-all-btn {
   padding: 10px 24px;
-  background: #5B21B6;
+  background: var(--color-primary-700);
   color: #fff;
   font-size: 14px;
   font-weight: 600;

@@ -11,8 +11,8 @@
         <!-- 달 장식 -->
         <div class="moon-deco">
           <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="40" cy="40" r="28" fill="rgba(255,255,255,0.07)" />
-            <path d="M54 26C46 26 40 32.3 40 40C40 47.7 46 54 54 54C49 54 38 50 38 40C38 30 49 26 54 26Z" fill="rgba(255,255,255,0.15)" />
+            <circle cx="40" cy="40" r="28" fill="rgba(253,230,138,0.18)" />
+            <path d="M54 26C46 26 40 32.3 40 40C40 47.7 46 54 54 54C49 54 38 50 38 40C38 30 49 26 54 26Z" fill="rgba(253,230,138,0.35)" />
           </svg>
         </div>
       </div>
@@ -204,7 +204,7 @@ import api from '../api/index.js'
 import { useDreamStore } from '../stores/dream.js'
 
 // ── 카테고리 SVG 아이콘 컴포넌트 ────────────────────
-const S = '#C4B5FD'  // 아이콘 공통 색상
+const S = '#6D28D9'  // 아이콘 공통 색상
 const sw = '1.8'     // stroke-width
 
 const IconPerson = defineComponent({ setup() { return () => h('svg', { viewBox: '0 0 40 40', fill: 'none', xmlns: 'http://www.w3.org/2000/svg' }, [
@@ -407,9 +407,19 @@ const zodiacList = [
 .hero {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(160deg, #1e0533 0%, #3b0764 35%, #5b21b6 70%, #6d28d9 100%);
+  background: linear-gradient(160deg, #4C1D95 0%, #7C3AED 35%, #F9A8D4 75%, #FDE68A 100%);
   padding: 0;
   color: #fff;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: linear-gradient(to bottom, transparent, var(--bg-base));
+  pointer-events: none;
 }
 
 /* 배경 레이어 */
@@ -422,14 +432,14 @@ const zodiacList = [
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 70% 50% at 80% 20%, rgba(167,139,250,0.25) 0%, transparent 60%),
-    radial-gradient(ellipse 40% 40% at 10% 80%, rgba(109,40,217,0.3) 0%, transparent 55%);
+    radial-gradient(ellipse 70% 50% at 80% 20%, rgba(253,230,138,0.2) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 10% 80%, rgba(249,168,212,0.2) 0%, transparent 55%);
 }
 
 /* 별 파티클 */
 .star {
   position: absolute;
-  background: #fff;
+  background: #ffffff;
   border-radius: 50%;
   animation: twinkle var(--dur, 3s) ease-in-out infinite var(--delay, 0s);
 }
@@ -439,28 +449,28 @@ const zodiacList = [
 }
 
 /* 별 위치/크기/속도 개별 정의 */
-.star-1  { width:2px; height:2px; top:8%;  left:12%; --dur:2.8s; --delay:0s;    --min-op:0.3; --max-op:1;   }
-.star-2  { width:1px; height:1px; top:15%; left:28%; --dur:3.5s; --delay:0.4s;  --min-op:0.2; --max-op:0.8; }
-.star-3  { width:2px; height:2px; top:5%;  left:55%; --dur:2.2s; --delay:1.1s;  --min-op:0.4; --max-op:1;   }
-.star-4  { width:1px; height:1px; top:20%; left:70%; --dur:4.1s; --delay:0.7s;  --min-op:0.2; --max-op:0.7; }
-.star-5  { width:3px; height:3px; top:10%; left:85%; --dur:3.0s; --delay:0.2s;  --min-op:0.3; --max-op:0.9; }
-.star-6  { width:1px; height:1px; top:30%; left:8%;  --dur:2.5s; --delay:1.5s;  --min-op:0.2; --max-op:0.6; }
-.star-7  { width:2px; height:2px; top:25%; left:40%; --dur:3.8s; --delay:0.9s;  --min-op:0.3; --max-op:0.8; }
-.star-8  { width:1px; height:1px; top:18%; left:62%; --dur:2.9s; --delay:1.8s;  --min-op:0.2; --max-op:0.7; }
-.star-9  { width:2px; height:2px; top:35%; left:90%; --dur:3.3s; --delay:0.3s;  --min-op:0.3; --max-op:1;   }
-.star-10 { width:1px; height:1px; top:42%; left:22%; --dur:4.5s; --delay:2.0s;  --min-op:0.1; --max-op:0.5; }
-.star-11 { width:2px; height:2px; top:50%; left:75%; --dur:2.7s; --delay:1.3s;  --min-op:0.3; --max-op:0.9; }
-.star-12 { width:1px; height:1px; top:58%; left:48%; --dur:3.6s; --delay:0.6s;  --min-op:0.2; --max-op:0.6; }
-.star-13 { width:2px; height:2px; top:12%; left:94%; --dur:2.4s; --delay:2.2s;  --min-op:0.4; --max-op:1;   }
-.star-14 { width:1px; height:1px; top:38%; left:5%;  --dur:3.9s; --delay:1.0s;  --min-op:0.2; --max-op:0.7; }
-.star-15 { width:2px; height:2px; top:22%; left:50%; --dur:2.6s; --delay:1.7s;  --min-op:0.3; --max-op:0.9; }
-.star-16 { width:1px; height:1px; top:45%; left:35%; --dur:4.2s; --delay:0.5s;  --min-op:0.1; --max-op:0.5; }
-.star-17 { width:2px; height:2px; top:7%;  left:38%; --dur:3.1s; --delay:2.5s;  --min-op:0.3; --max-op:0.8; }
-.star-18 { width:1px; height:1px; top:55%; left:88%; --dur:2.9s; --delay:1.4s;  --min-op:0.2; --max-op:0.7; }
-.star-19 { width:3px; height:3px; top:3%;  left:72%; --dur:3.4s; --delay:0.8s;  --min-op:0.4; --max-op:1;   }
-.star-20 { width:1px; height:1px; top:60%; left:15%; --dur:4.0s; --delay:1.9s;  --min-op:0.1; --max-op:0.5; }
-.star-21 { width:2px; height:2px; top:28%; left:82%; --dur:2.3s; --delay:2.8s;  --min-op:0.3; --max-op:0.9; }
-.star-22 { width:1px; height:1px; top:47%; left:58%; --dur:3.7s; --delay:1.2s;  --min-op:0.2; --max-op:0.6; }
+.star-1  { width:2px; height:2px; top:8%;  left:12%; --dur:2.8s; --delay:0s;    --min-op:0.4; --max-op:0.8; }
+.star-2  { width:1px; height:1px; top:15%; left:28%; --dur:3.5s; --delay:0.4s;  --min-op:0.3; --max-op:0.7; }
+.star-3  { width:2px; height:2px; top:5%;  left:55%; --dur:2.2s; --delay:1.1s;  --min-op:0.5; --max-op:0.8; }
+.star-4  { width:1px; height:1px; top:20%; left:70%; --dur:4.1s; --delay:0.7s;  --min-op:0.3; --max-op:0.7; }
+.star-5  { width:3px; height:3px; top:10%; left:85%; --dur:3.0s; --delay:0.2s;  --min-op:0.4; --max-op:0.8; }
+.star-6  { width:1px; height:1px; top:30%; left:8%;  --dur:2.5s; --delay:1.5s;  --min-op:0.3; --max-op:0.6; }
+.star-7  { width:2px; height:2px; top:25%; left:40%; --dur:3.8s; --delay:0.9s;  --min-op:0.4; --max-op:0.7; }
+.star-8  { width:1px; height:1px; top:18%; left:62%; --dur:2.9s; --delay:1.8s;  --min-op:0.3; --max-op:0.6; }
+.star-9  { width:2px; height:2px; top:35%; left:90%; --dur:3.3s; --delay:0.3s;  --min-op:0.4; --max-op:0.8; }
+.star-10 { width:1px; height:1px; top:42%; left:22%; --dur:4.5s; --delay:2.0s;  --min-op:0.2; --max-op:0.5; }
+.star-11 { width:2px; height:2px; top:50%; left:75%; --dur:2.7s; --delay:1.3s;  --min-op:0.4; --max-op:0.8; }
+.star-12 { width:1px; height:1px; top:58%; left:48%; --dur:3.6s; --delay:0.6s;  --min-op:0.3; --max-op:0.6; }
+.star-13 { width:2px; height:2px; top:12%; left:94%; --dur:2.4s; --delay:2.2s;  --min-op:0.5; --max-op:0.8; }
+.star-14 { width:1px; height:1px; top:38%; left:5%;  --dur:3.9s; --delay:1.0s;  --min-op:0.3; --max-op:0.6; }
+.star-15 { width:2px; height:2px; top:22%; left:50%; --dur:2.6s; --delay:1.7s;  --min-op:0.4; --max-op:0.7; }
+.star-16 { width:1px; height:1px; top:45%; left:35%; --dur:4.2s; --delay:0.5s;  --min-op:0.2; --max-op:0.5; }
+.star-17 { width:2px; height:2px; top:7%;  left:38%; --dur:3.1s; --delay:2.5s;  --min-op:0.4; --max-op:0.7; }
+.star-18 { width:1px; height:1px; top:55%; left:88%; --dur:2.9s; --delay:1.4s;  --min-op:0.3; --max-op:0.6; }
+.star-19 { width:3px; height:3px; top:3%;  left:72%; --dur:3.4s; --delay:0.8s;  --min-op:0.5; --max-op:0.8; }
+.star-20 { width:1px; height:1px; top:60%; left:15%; --dur:4.0s; --delay:1.9s;  --min-op:0.2; --max-op:0.5; }
+.star-21 { width:2px; height:2px; top:28%; left:82%; --dur:2.3s; --delay:2.8s;  --min-op:0.4; --max-op:0.7; }
+.star-22 { width:1px; height:1px; top:47%; left:58%; --dur:3.7s; --delay:1.2s;  --min-op:0.3; --max-op:0.6; }
 
 /* 달 장식 */
 .moon-deco {
@@ -499,7 +509,7 @@ const zodiacList = [
   line-height: 1.25;
   margin: 0 0 10px;
   letter-spacing: -0.5px;
-  text-shadow: 0 2px 20px rgba(109,40,217,0.6);
+  text-shadow: 0 2px 20px rgba(76,29,149,0.5);
 }
 .hero-sub {
   font-family: 'Noto Sans KR', sans-serif;
@@ -606,20 +616,20 @@ const zodiacList = [
 .kw-chip {
   height: 28px;
   padding: 0 12px;
-  background: rgba(167, 139, 250, 0.15);
-  border: 1px solid rgba(167, 139, 250, 0.35);
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: 20px;
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 12px;
   font-weight: 500;
-  color: #ddd6fe;
+  color: #fff;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 .kw-chip:active {
-  background: rgba(167, 139, 250, 0.28);
-  border-color: rgba(167, 139, 250, 0.6);
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.65);
 }
 
 /* ── 공통 섹션 ── */
@@ -635,12 +645,12 @@ const zodiacList = [
 .section-title {
   font-size: 16px;
   font-weight: 700;
-  color: #F2F0FF;
+  color: var(--text-primary);
   margin: 0;
 }
 .section-more {
   font-size: 12px;
-  color: #A78BFA;
+  color: var(--color-primary-700);
   text-decoration: none;
 }
 
@@ -656,25 +666,25 @@ const zodiacList = [
   align-items: center;
   gap: 8px;
   padding: 18px 8px;
-  background: #1B1A2E;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
   border-radius: 16px;
   cursor: pointer;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+  box-shadow: var(--shadow-card);
   transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 .category-btn:active {
   transform: scale(0.95);
-  box-shadow: 0 1px 6px rgba(0,0,0,0.2);
-  border-color: rgba(167,139,250,0.4);
-  background: #221F3A;
+  box-shadow: none;
+  border-color: var(--border-strong);
+  background: var(--bg-elevated);
 }
 @media (hover: hover) {
   .category-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 24px rgba(124,58,237,0.2);
-    border-color: rgba(167,139,250,0.35);
+    box-shadow: var(--shadow-elevated);
+    border-color: var(--border-strong);
   }
 }
 .category-icon {
@@ -685,7 +695,7 @@ const zodiacList = [
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 12px;
   font-weight: 700;
-  color: #C4B5FD;
+  color: var(--text-secondary);
   letter-spacing: -0.2px;
   white-space: nowrap;
 }
@@ -693,7 +703,7 @@ const zodiacList = [
   font-family: 'Noto Sans KR', sans-serif;
   font-size: 10px;
   font-weight: 400;
-  color: #55516E;
+  color: var(--text-muted);
   letter-spacing: -0.2px;
 }
 
@@ -872,15 +882,15 @@ const zodiacList = [
 }
 .zodiac-card {
   position: relative;
-  background: #1B1A2E;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
   border-radius: 14px;
   padding: 14px 8px 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  box-shadow: var(--shadow-card);
   text-align: center;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   -webkit-tap-highlight-color: transparent;
@@ -888,18 +898,18 @@ const zodiacList = [
 }
 .zodiac-card:active {
   transform: scale(0.97);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: none;
 }
 @media (hover: hover) {
   .zodiac-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(124,58,237,0.2);
-    border-color: rgba(167,139,250,0.3);
+    box-shadow: var(--shadow-elevated);
+    border-color: var(--border-strong);
   }
 }
 .zodiac-best {
-  border-color: rgba(167,139,250,0.35);
-  background: linear-gradient(160deg, #221F3A, #1B1A2E);
+  border-color: var(--border-strong);
+  background: linear-gradient(160deg, var(--bg-elevated), var(--bg-surface));
 }
 .zodiac-rank {
   position: absolute;
@@ -907,8 +917,8 @@ const zodiacList = [
   left: 8px;
   font-size: 9px;
   font-weight: 700;
-  color: #C4B5FD;
-  background: rgba(124,58,237,0.25);
+  color: var(--text-secondary);
+  background: var(--color-primary-100);
   padding: 1px 5px;
   border-radius: 8px;
 }
@@ -918,18 +928,18 @@ const zodiacList = [
 .zodiac-animal {
   font-size: 13px;
   font-weight: 700;
-  color: #F2F0FF;
+  color: var(--text-primary);
   margin: 0;
 }
 .zodiac-years {
   font-size: 9px;
-  color: #55516E;
+  color: var(--text-muted);
   margin: 0;
   letter-spacing: -0.3px;
 }
 .zodiac-luck {
   font-size: 10px;
-  color: #8882A8;
+  color: var(--text-secondary);
   margin: 2px 0 0;
   line-height: 1.4;
 }
@@ -938,31 +948,32 @@ const zodiacList = [
   letter-spacing: 1px;
 }
 .star-on  { color: #f59e0b; }
-.star-off { color: #2E2C42; }
+.star-off { color: var(--color-primary-200); }
 
 /* ── 오늘의 꿈해몽 ── */
 .daily-error {
   font-size: 13px;
-  color: #55516E;
+  color: var(--text-muted);
   text-align: center;
   padding: 20px 0;
 }
 .daily-date {
   font-size: 12px;
-  color: #6B6888;
+  color: var(--text-muted);
 }
 .daily-skeleton {
-  background: #1B1A2E;
+  background: var(--bg-surface);
   border-radius: 14px;
   padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  box-shadow: var(--shadow-card);
 }
 .skeleton-line {
   height: 14px;
   border-radius: 7px;
-  background: linear-gradient(90deg, #2E2C42 25%, #3A3858 50%, #2E2C42 75%);
+  background: linear-gradient(90deg, #EDE9FE 25%, #DDD6FE 50%, #EDE9FE 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
 }
@@ -974,16 +985,17 @@ const zodiacList = [
   100% { background-position: -200% 0; }
 }
 .daily-card {
-  background: #1B1A2E;
+  background: var(--bg-surface);
   border-radius: 14px;
-  border-left: 3px solid #7C3AED;
+  border-left: 3px solid var(--color-primary-700);
   padding: 18px;
   cursor: pointer;
-  transition: background 0.15s;
+  box-shadow: var(--shadow-card);
+  transition: box-shadow 0.15s, background 0.15s;
   -webkit-tap-highlight-color: transparent;
 }
 .daily-card:active {
-  background: #22213A;
+  background: var(--bg-elevated);
 }
 .daily-top {
   display: flex;
@@ -994,21 +1006,21 @@ const zodiacList = [
 .daily-category {
   font-size: 11px;
   font-weight: 600;
-  color: #A78BFA;
-  background: rgba(167, 139, 250, 0.12);
+  color: var(--text-muted);
+  background: var(--color-primary-100);
   border-radius: 6px;
   padding: 2px 8px;
 }
 .daily-title {
   font-size: 16px;
   font-weight: 700;
-  color: #F2F0FF;
+  color: var(--text-primary);
   margin: 0 0 8px;
   line-height: 1.4;
 }
 .daily-summary {
   font-size: 13px;
-  color: #8882A8;
+  color: var(--text-secondary);
   margin: 0 0 14px;
   line-height: 1.6;
 }
@@ -1022,6 +1034,6 @@ const zodiacList = [
   gap: 4px;
   font-size: 13px;
   font-weight: 600;
-  color: #A78BFA;
+  color: var(--color-primary-700);
 }
 </style>
